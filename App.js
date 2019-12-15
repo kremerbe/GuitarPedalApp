@@ -9,7 +9,7 @@
 import React from 'react';
 import { YellowBox } from 'react-native';
 import { createBottomTabNavigator, createAppContainer, createSwitchNavigator, createStackNavigator, createMaterialTopTabNavigator } from 'react-navigation';
-import Home from './src/Home';
+import Home from './src/GUI/Home';
 
 const AppStack = createSwitchNavigator(
   {

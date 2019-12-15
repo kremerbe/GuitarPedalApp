@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import NetworkManager from './NetworkManager';
+import NetworkManager from '../Logic/NetworkManager';
+import FileSystemManager from './../Logic/FileSystemManager';
 
 export default class Home extends Component {
 
@@ -10,6 +11,8 @@ export default class Home extends Component {
         super(props);
 
         this.netManager = new NetworkManager();
+        this.fsManager = new FileSystemManager();
+        this.fsManager.doStuff();
     }
 
 
