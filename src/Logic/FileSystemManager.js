@@ -17,7 +17,7 @@ export default class FileSystemManager {
     async doStuff() {
         // await this.initializeSaveDirectory();
         await this.deleteEffect(this.testFileName);
-        await this.saveEffect(this.testFileName);
+        await this.saveEffect(this.testFileName, "Message");
         // await this.loadEffects();
         this.readFolder(this.SAVE_PATH);
     }
@@ -41,16 +41,20 @@ export default class FileSystemManager {
     }
 
     /**
+     * TODO: Convert to taking an Effect object.
      * Saves an effect to the file system.
      * @param {String} effectName the name of the effect to save.
+     * @param {String} effect the PureData effect data
      */
-    async saveEffect(effectName) {
-        await RNFS.writeFile(this.SAVE_PATH+effectName+".txt", 'Message', 'utf8')
+    async saveEffect(effectName, effect) {
+        await RNFS.writeFile(this.SAVE_PATH+effectName+".pd", effect, 'utf8')
         .then(success => {
-            console.log("Test file written!");
+            console.log("Effect "+effectName+" saved!");
+            return success;
         })
         .catch(err => {
-            console.log("Test file save failed! "+err.message);
+            console.log("ERROR: Effect failed to save. "+err.message);
+            return false;
         });
     }
 
