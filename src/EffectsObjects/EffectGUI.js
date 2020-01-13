@@ -1,21 +1,18 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import NetworkManager from '../Logic/NetworkManager';
-import FileSystemManager from './../Logic/FileSystemManager';
+import { PropTypes } from 'prop-types';
 
-export default class Home extends Component {
-
-    netManager;
+export default class EffectGUI extends Component {
 
     constructor(props){
         super(props);
 
-        this.netManager = new NetworkManager();
-        this.fsManager = new FileSystemManager();
-        this.fsManager.testStuff();
+        this.state = {
+            effect: this.props.effect,
+        }
     }
 
-
+    // TODO: Create effect GUI
     render() {
         return (
             <View style={styles.container}>
@@ -23,6 +20,10 @@ export default class Home extends Component {
             </View>
         );
     }
+}
+
+EffectGUI.propTypes = {
+    effect: PropTypes.object.isRequired,
 }
 
 const styles = StyleSheet.create({
