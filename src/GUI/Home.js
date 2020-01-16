@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import NetworkManager from '../Logic/NetworkManager';
 import FileSystemManager from './../Logic/FileSystemManager';
+import PDComponent from '../EffectsObjects/PDComponent';
+import data from '../JsonData/PureDataComponent'; 
 
 export default class Home extends Component {
 

@@ -1,0 +1,179 @@
+{
+    "PureDataComponents": [
+       {
+          "Name": "adc~",
+          "Discription": "audio input",
+          "NumInputs": 1,
+          "NumOutputs": 2
+       },
+       {
+          "Name": "dac~",
+          "Discription": "audio output",
+          "NumInputs": 2,
+          "NumOutputs": 0
+       },
+       {
+          "Name": "bang~",
+          "Discription": "output bang after each DSP cycle",
+          "NumInputs": 1,
+          "NumOutputs": 1
+       },
+       {
+          "Name": "switch~",
+          "Discription": "switch DSP on and off",
+          "NumInputs": 0,
+          "NumOutputs": 1
+       },
+       {
+          "Name": "+~",
+          "Discription": "",
+          "NumInputs": 2,
+          "NumOutputs": 1
+       },
+       {
+          "Name": "-~",
+          "Discription": "",
+          "NumInputs": 2,
+          "NumOutputs": 1
+       },
+       {
+          "Name": "*~",
+          "Discription": "",
+          "NumInputs": 2,
+          "NumOutputs": 1
+       },
+       {
+          "Name": "/~",
+          "Discription": "operators on audio signals",
+          "NumInputs": 2,
+          "NumOutputs": 1
+       },
+       {
+          "Name": "max~",
+          "Discription": "",
+          "NumInputs": 3,
+          "NumOutputs": 1
+       },
+       {
+          "Name": "min~",
+          "Discription": "maximum or minimum of 2 inputs",
+          "NumInputs": 3,
+          "NumOutputs": 1
+       },
+       {
+          "Name": "clip~",
+          "Discription": "restrict a signal to lie between two limits",
+          "NumInputs": 1,
+          "NumOutputs": 1
+       },
+       {
+          "Name": "fft~",
+          "Discription": "forward FFT",
+          "NumInputs": 2,
+          "NumOutputs": 2
+       },
+       {
+          "Name": "ifft~",
+          "Discription": "inverse complex FFT",
+          "NumInputs": 2,
+          "NumOutputs": 2
+       },
+       {
+          "Name": "rfft~",
+          "Discription": "",
+          "NumInputs": 1,
+          "NumOutputs": 2
+       },
+       {
+          "Name": "rifft~",
+          "Discription": "forward and inverse real FFT",
+          "NumInputs": 1,
+          "NumOutputs": 2
+       },
+       {
+          "Name": "pow~",
+          "Discription": "",
+          "NumInputs": 2,
+          "NumOutputs": 1
+       },
+       {
+          "Name": "log~",
+          "Discription": "",
+          "NumInputs": 2,
+          "NumOutputs": 1
+       },
+       {
+          "Name": "exp~",
+          "Discription": "",
+          "NumInputs": 2,
+          "NumOutputs": 1
+       },
+       {
+          "Name": "abs~",
+          "Discription": "",
+          "NumInputs": 2,
+          "NumOutputs": 1
+       },
+       {
+          "Name": "env~",
+          "Discription": "envelope follower",
+          "NumInputs": 1,
+          "NumOutputs": 1
+       },
+       {
+          "Name": "vcf~",
+          "Discription": "voltage-controlled bandpass filter",
+          "NumInputs": 3,
+          "NumOutputs": 2
+       },
+       {
+          "Name": "noise~",
+          "Discription": "uniformly distributed white noise",
+          "NumInputs": 1,
+          "NumOutputs": 1
+       },
+       {
+          "Name": "hip~",
+          "Discription": "one-pole high pass filter",
+          "NumInputs": 2,
+          "NumOutputs": 1
+       },
+       {
+          "Name": "lop~",
+          "Discription": "one-pole low pass filter",
+          "NumInputs": 2,
+          "NumOutputs": 1
+       },
+       {
+          "Name": "bp~",
+          "Discription": "bandpass filter",
+          "NumInputs": 3,
+          "NumOutputs": 1
+       },
+       {
+          "Name": "samphold~",
+          "Discription": "sample and hold unit",
+          "NumInputs": 2,
+          "NumOutputs": 1
+       },
+       {
+          "Name": "rpole~",
+          "Discription": "real one-pole (recursive) filter, raw",
+          "NumInputs": 2,
+          "NumOutputs": 1
+       },
+       {
+          "Name": "delwrite~",
+          "Discription": "writes a signal in a delay line",
+          "NumInputs": 1,
+          "NumOutputs": 1
+       },
+       {
+          "Name": "delread~",
+          "Discription": "read a signal from a delay line",
+          "NumInputs": 1,
+          "NumOutputs": 1
+       }
+     ]
+ }
+ 
