@@ -29,6 +29,7 @@ export default class FileSystemManager {
     /**
      * Saves an effect to the file system.
      * @param {Effect} effect the Effect object to save.
+     * @returns {Boolean} whether or not the Effect was saved successfully.
      */
     async saveEffect(effect) {
         await RNFS.writeFile(this.SAVE_PATH+effect.getName()+".pd", effect.exportComponents(), 'utf8')
@@ -44,6 +45,7 @@ export default class FileSystemManager {
 
     /**
      * Loads the effect files from the file system.
+     * @returns {Array{Effect}} an array of Effect objects created from the saved PD files.
      */
     async loadEffects() {
         effectsList = [];
@@ -64,17 +66,25 @@ export default class FileSystemManager {
     /**
      * Deletes an effect from the file system.
      * @param {String} effectName the name of the effect to delete.
+     * @returns {Boolean} whether or not deleting the Effect was successful.
      */
     async deleteEffect(effect) {
         await RNFS.unlink(this.SAVE_PATH+effect.getName()+".pd")
         .then(success => {
             console.log("Successfully deleted the file!");
+            return success;
         })
         .catch(err => {
             console.log("Could not delete the file ''"+effect.getName()+"': "+err.message);
+            return false;
         })
     }
 
+    /**
+     * Returns an array of the names of the PureData files in a specified directory.
+     * @param {String} path the directory path to read the PD files from.
+     * @returns {Array{String}} the array of PD file names.
+     */
     async readDirPdFilenames(path) {
         return await RNFS.readDir(path)
         .then(pdFiles => {
@@ -84,7 +94,9 @@ export default class FileSystemManager {
     }
 
     /**
-     * Returns the contents of a directory
+     * Returns the contents of a directory for testing purposes.
+     * @param {String} path the directory path to read files from.
+     * @returns {Promise} a promise containing the directory contents.
      */
     async readDir(path) {
         return await RNFS.readDir(path)
