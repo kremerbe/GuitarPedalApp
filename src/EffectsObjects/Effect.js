@@ -17,6 +17,9 @@ export default class Effect {
         return this._name;
     }
 
+    /**
+     * Returns a list/array of the components
+     */
     getComponents() {
         return this._components;
     }

@@ -1,18 +1,24 @@
 
 export default class AppComponent {
 
-    PDComponents = new componentList;
-    constructor(name) {
-        this.name = name;
+    constructor(name, numInputs, numOutputs) {
+        this._name = name;
+        this.numInputs = numInputs;
+        this.numOutputs = numOutputs;
     }
-    
+
+    /**
+     * Turns the list of components into a string for export to a file.
+     */
+    exportComponents() {
+        return this._components;
+    }
+
     getName() {
         return this._name;
     }
 
-    getComponentList() {
+    getComponents() {
         return this._components;
     }
-
-    // How do we know what the appcomponent is made of?
 }

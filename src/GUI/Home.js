@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import NetworkManager from '../Logic/NetworkManager';
 import FileSystemManager from './../Logic/FileSystemManager';
-import PDComponent from '../EffectsObjects/PDComponent';
-import data from '../JsonData/PureDataComponent'; 
+import PureDataManager from './../Logic/PureDataManager';
 
 export default class Home extends Component {
 
@@ -15,6 +14,8 @@ export default class Home extends Component {
         this.netManager = new NetworkManager();
         this.fsManager = new FileSystemManager();
         this.fsManager.testStuff();
+        this.pdManager = new PureDataManager();
+        this.pdManager.testNewEffect();
     }
 
 

@@ -77,3 +77,61 @@ export default class NetworkManager {
         
     }
 }
+/**
+ * Given via https://github.com/Polidea/react-native-ble-plx/issues/273
+export default class App extends Component {
+    constructor() {
+      super();
+      this.manager = new BleManager();
+  }
+  
+  componentWillMount() {
+      console.log("in componentWillMount")
+      const subscription = this.manager.onStateChange((state) => {
+          if (state === 'PoweredOn') {
+              this.scanAndConnect();
+              subscription.remove();
+          }
+      }, true);
+  }
+  
+  scanAndConnect() {
+    console.log("in scanAndConnect")
+      this.manager.startDeviceScan(null, null, (error, device) => {
+          if (error) {
+              // Handle error (scanning will be stopped automatically)
+              console.log("ERROR : ", error);
+              return
+          }
+  
+          console.log("Device Detected", device);
+          // Check if it is a device you are looking for based on advertisement data
+          // or other criteria.
+          if (device.name === 'TI BLE Sensor Tag' ||
+              device.name === 'SensorTag') {
+  
+              // Stop scanning as it's not necessary if you are scanning for one device.
+              this.manager.stopDeviceScan();
+  
+              // Proceed with connection.
+          }
+      });
+  }
+  
+  render() {
+      return (
+        <View style={styles.container}>
+          <Text style={styles.welcome}>
+            Welcome to React Native!
+          </Text>
+          <Text style={styles.instructions}>
+            To get started, edit App.js
+          </Text>
+          <Text style={styles.instructions}>
+            {instructions}
+          </Text>
+        </View>
+      );
+    }
+  }
+  */

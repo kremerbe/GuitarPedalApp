@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 export default class PDComponent {
     numInputs;
@@ -13,3 +14,5 @@ export default class PDComponent {
         return this._name;
     }
 }
+=======
+>>>>>>> parent of 0a079b9... Merge branch 'dev' of https://github.com/kremerbe/GuitarPedalApp into dev
