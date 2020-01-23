@@ -3,6 +3,7 @@ import { View, StyleSheet, Text } from 'react-native';
 import NetworkManager from '../Logic/NetworkManager';
 import FileSystemManager from './../Logic/FileSystemManager';
 import PureDataManager from './../Logic/PureDataManager';
+import EffectList from './EffectList';
 
 export default class Home extends Component {
 
@@ -14,6 +15,19 @@ export default class Home extends Component {
         this.netManager = new NetworkManager();
         this.fsManager = new FileSystemManager();
         this.fsManager.testStuff();
+
+        this.state = {
+            effects: [],
+        }
+    }
+
+    componentDidMount = async () => {
+        effects = await this.fsManager.loadEffects();
+        console.log("Loaded Effects!");
+        console.log(effects);
+        this.setState({
+            effects: effects,
+        });
     }
 
 
@@ -21,6 +35,7 @@ export default class Home extends Component {
         return (
             <View style={styles.container}>
                 <Text style={styles.text}>Hello!</Text>
+                <EffectList effects={this.state.effects}/>
             </View>
         );
     }
