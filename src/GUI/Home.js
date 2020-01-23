@@ -14,8 +14,6 @@ export default class Home extends Component {
         this.netManager = new NetworkManager();
         this.fsManager = new FileSystemManager();
         this.fsManager.testStuff();
-        this.pdManager = new PureDataManager();
-        this.pdManager.testNewEffect();
     }
 
 

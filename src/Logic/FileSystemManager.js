@@ -1,13 +1,11 @@
 import Effect from './../EffectsObjects/Effect';
+import AppComponent from '../EffectsObjects/AppComponent';
 var RNFS = require('react-native-fs');
 
 
 export default class FileSystemManager {
 
     SAVE_PATH = RNFS.DocumentDirectoryPath+"/";
-
-    testEffect1 = new Effect("test1", "blah blah blah");
-    testEffect2 = new Effect("test2", "blippity bloppity");
 
 
     constructor() {
@@ -16,14 +14,24 @@ export default class FileSystemManager {
     }
 
     async testStuff() {
+
+        audioIn = new AppComponent("adc~", 2, 2);
+        audioOut = new AppComponent("dac~", 2, 2);
+        compList1 = [];
+        compList1.push(audioIn);
+        compList1.push(audioOut);
+        testEffect1 = new Effect("passthrough", compList1);
+        testEffect2 = new Effect("otherShit", compList1);
         console.log(await this.readDir(this.SAVE_PATH));
-        await this.deleteEffect(this.testEffect1);
-        await this.deleteEffect(this.testEffect2);
+        await this.deleteEffect(testEffect1);
+        await this.deleteEffect(testEffect2);
         console.log(await this.readDir(this.SAVE_PATH));
-        await this.saveEffect(this.testEffect1);
-        await this.saveEffect(this.testEffect2);
+        await this.saveEffect(testEffect1);
+        await this.saveEffect(testEffect2);
         console.log("Load Effects:");
         console.log(await this.loadEffects());
+        console.log(testEffect1.AppToPD());
+        console.log(testEffect2.AppToPD());
     }
 
     /**
@@ -32,10 +40,11 @@ export default class FileSystemManager {
      * @returns {Boolean} whether or not the Effect was saved successfully.
      */
     async saveEffect(effect) {
-        await RNFS.writeFile(this.SAVE_PATH+effect.getName()+".pd", effect.exportComponents(), 'utf8')
+        await RNFS.writeFile(this.SAVE_PATH+effect.getName()+".pd", effect.AppToPD(), 'utf8')
         .then(success => {
             console.log("Effect "+effect.getName()+" saved!");
             return success;
+            
         })
         .catch(err => {
             console.log("ERROR: Effect failed to save. "+err.message);

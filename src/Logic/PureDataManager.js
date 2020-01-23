@@ -36,6 +36,5 @@ export default class PureDataManager {
         console.log(s);
         s = "#X connect 0 1 1 1;"
         console.log(s);
-        
     }
 }
