@@ -1,6 +1,5 @@
 
 export default class Effect {
-
     constructor(name, components) {
         this._name = name;
         this._components = components;
@@ -22,5 +21,22 @@ export default class Effect {
      */
     getComponents() {
         return this._components;
+    }
+
+    AppToPD () {
+        let compList = this._components.slice();
+        let x = 0; 
+        let y = 0; 
+
+       let s = "#N canvas 300 300 450 300 12;\r\n"; 
+
+        for(let i = 0; i < compList.length ; i++) {
+            s = s + "#X obj " + x + " " + y + " " + compList[i].getName() + ";\r\n"; 
+            y += 30;
+        }
+
+        s = s + "#X connect 0 0 1 0;\r\n"; 
+        s = s + "#X connect 0 1 1 1;\r\n"; 
+        return s;
     }
 }

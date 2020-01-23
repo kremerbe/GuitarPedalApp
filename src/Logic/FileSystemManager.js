@@ -1,13 +1,11 @@
 import Effect from './../EffectsObjects/Effect';
+import AppComponent from '../EffectsObjects/AppComponent';
 var RNFS = require('react-native-fs');
 
 
 export default class FileSystemManager {
 
     SAVE_PATH = RNFS.DocumentDirectoryPath+"/";
-
-    testEffect1 = new Effect("test1", "blah blah blah");
-    testEffect2 = new Effect("test2", "blippity bloppity");
 
 
     constructor() {
@@ -16,14 +14,24 @@ export default class FileSystemManager {
     }
 
     async testStuff() {
+
+        audioIn = new AppComponent("adc~", 2, 2);
+        audioOut = new AppComponent("dac~", 2, 2);
+        compList1 = [];
+        compList1.push(audioIn);
+        compList1.push(audioOut);
+        testEffect1 = new Effect("passthrough", compList1);
+        testEffect2 = new Effect("otherShit", compList1);
         console.log(await this.readDir(this.SAVE_PATH));
-        await this.deleteEffect(this.testEffect1);
-        await this.deleteEffect(this.testEffect2);
+        await this.deleteEffect(testEffect1);
+        await this.deleteEffect(testEffect2);
         console.log(await this.readDir(this.SAVE_PATH));
-        await this.saveEffect(this.testEffect1);
-        await this.saveEffect(this.testEffect2);
+        await this.saveEffect(testEffect1);
+        await this.saveEffect(testEffect2);
         console.log("Load Effects:");
         console.log(await this.loadEffects());
+        console.log(testEffect1.AppToPD());
+        console.log(testEffect2.AppToPD());
     }
 
     /**
@@ -32,10 +40,11 @@ export default class FileSystemManager {
      * @returns {Boolean} whether or not the Effect was saved successfully.
      */
     async saveEffect(effect) {
-        await RNFS.writeFile(this.SAVE_PATH+effect.getName()+".pd", effect.exportComponents(), 'utf8')
+        await RNFS.writeFile(this.SAVE_PATH+effect.getName()+".pd", effect.AppToPD(), 'utf8')
         .then(success => {
             console.log("Effect "+effect.getName()+" saved!");
             return success;
+            
         })
         .catch(err => {
             console.log("ERROR: Effect failed to save. "+err.message);
@@ -53,7 +62,7 @@ export default class FileSystemManager {
         for (i=0; i<effectFiles.length; i++) {
             await RNFS.readFile(this.SAVE_PATH+effectFiles[i]+".pd", 'utf8')
             .then(effectData => {
-                effect = new Effect(effectFiles[i], effectData.split("\n"));
+                effect = new Effect(effectFiles[i], effectData);
                 effectsList.push(effect);
             })
             .catch(err => {
@@ -71,10 +80,11 @@ export default class FileSystemManager {
     async deleteEffect(effect) {
         await RNFS.unlink(this.SAVE_PATH+effect.getName()+".pd")
         .then(success => {
+            console.log("Successfully deleted the file!");
             return success;
         })
         .catch(err => {
-            console.log("Error: Could not delete the file ''"+effect.getName()+"': "+err.message);
+            console.log("Could not delete the file ''"+effect.getName()+"': "+err.message);
             return false;
         })
     }
@@ -89,7 +99,7 @@ export default class FileSystemManager {
         .then(pdFiles => {
             return pdFiles.map(f => f.name).filter(f => f.endsWith(".pd")).map(f => f.substring(0, f.length-3));
         })
-        .catch(err => console.log("Error: Failed to read folder! "+err.message));
+        .catch(err => console.log("Failed to read folder! "+err.message));
     }
 
     /**
@@ -100,6 +110,6 @@ export default class FileSystemManager {
     async readDir(path) {
         return await RNFS.readDir(path)
         .then(files => { return files; })
-        .catch(err => console.log("Error: Failed to read folder! "+err.message));
+        .catch(err => console.log("Failed to read folder! "+err.message));
     }
 }
