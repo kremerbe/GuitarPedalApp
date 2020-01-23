@@ -5,7 +5,7 @@ var RNFS = require('react-native-fs');
 
 export default class FileSystemManager {
 
-    SAVE_PATH = RNFS.DocumentDirectoryPath+"/";
+    SAVE_PATH = RNFS.ExternalDirectoryPath+"/";
 
 
     constructor() {
@@ -14,15 +14,17 @@ export default class FileSystemManager {
     }
 
     async testStuff() {
-
         audioIn = new AppComponent("adc~", 2, 2);
         audioOut = new AppComponent("dac~", 2, 2);
+        extra = new AppComponent("extra~", 2, 2);
         compList1 = [];
         compList1.push(audioIn);
         compList1.push(audioOut);
+        compList1.push(extra);
         testEffect1 = new Effect("passthrough", compList1);
         testEffect2 = new Effect("otherShit", compList1);
         console.log(await this.readDir(this.SAVE_PATH));
+        
         await this.deleteEffect(testEffect1);
         await this.deleteEffect(testEffect2);
         console.log(await this.readDir(this.SAVE_PATH));
@@ -32,6 +34,7 @@ export default class FileSystemManager {
         console.log(await this.loadEffects());
         console.log(testEffect1.AppToPD());
         console.log(testEffect2.AppToPD());
+        console.log(this.SAVE_PATH);
     }
 
     /**
@@ -44,7 +47,7 @@ export default class FileSystemManager {
         .then(success => {
             console.log("Effect "+effect.getName()+" saved!");
             return success;
-            
+
         })
         .catch(err => {
             console.log("ERROR: Effect failed to save. "+err.message);
