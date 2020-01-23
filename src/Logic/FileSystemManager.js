@@ -53,7 +53,7 @@ export default class FileSystemManager {
         for (i=0; i<effectFiles.length; i++) {
             await RNFS.readFile(this.SAVE_PATH+effectFiles[i]+".pd", 'utf8')
             .then(effectData => {
-                effect = new Effect(effectFiles[i], effectData.split("\n"));
+                effect = new Effect(effectFiles[i], effectData);
                 effectsList.push(effect);
             })
             .catch(err => {
@@ -71,10 +71,11 @@ export default class FileSystemManager {
     async deleteEffect(effect) {
         await RNFS.unlink(this.SAVE_PATH+effect.getName()+".pd")
         .then(success => {
+            console.log("Successfully deleted the file!");
             return success;
         })
         .catch(err => {
-            console.log("Error: Could not delete the file ''"+effect.getName()+"': "+err.message);
+            console.log("Could not delete the file ''"+effect.getName()+"': "+err.message);
             return false;
         })
     }
@@ -89,7 +90,7 @@ export default class FileSystemManager {
         .then(pdFiles => {
             return pdFiles.map(f => f.name).filter(f => f.endsWith(".pd")).map(f => f.substring(0, f.length-3));
         })
-        .catch(err => console.log("Error: Failed to read folder! "+err.message));
+        .catch(err => console.log("Failed to read folder! "+err.message));
     }
 
     /**
@@ -100,6 +101,6 @@ export default class FileSystemManager {
     async readDir(path) {
         return await RNFS.readDir(path)
         .then(files => { return files; })
-        .catch(err => console.log("Error: Failed to read folder! "+err.message));
+        .catch(err => console.log("Failed to read folder! "+err.message));
     }
 }
