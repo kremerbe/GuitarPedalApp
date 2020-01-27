@@ -9,8 +9,8 @@ export default class FileSystemManager {
 
 
     constructor() {
-        console.log("File System Manager start check!");
-        console.log("Save filepath: "+this.SAVE_PATH);
+        // console.log("File System Manager start check!");
+        // console.log("Save filepath: "+this.SAVE_PATH);
     }
 
     async testStuff() {
@@ -23,18 +23,22 @@ export default class FileSystemManager {
         compList1.push(extra);
         testEffect1 = new Effect("passthrough", compList1);
         testEffect2 = new Effect("otherShit", compList1);
+        console.log("Initial files:");
         console.log(await this.readDir(this.SAVE_PATH));
         
+        console.log("Deleting both existing files...");
         await this.deleteEffect(testEffect1);
         await this.deleteEffect(testEffect2);
+        console.log("Current save folder:")
         console.log(await this.readDir(this.SAVE_PATH));
+        console.log("Saving both effects again...");
         await this.saveEffect(testEffect1);
         await this.saveEffect(testEffect2);
         console.log("Load Effects:");
         console.log(await this.loadEffects());
+        console.log("AppToPD Tests:");
         console.log(testEffect1.AppToPD());
         console.log(testEffect2.AppToPD());
-        console.log(this.SAVE_PATH);
     }
 
     /**
@@ -45,7 +49,7 @@ export default class FileSystemManager {
     async saveEffect(effect) {
         await RNFS.writeFile(this.SAVE_PATH+effect.getName()+".pd", effect.AppToPD(), 'utf8')
         .then(success => {
-            console.log("Effect "+effect.getName()+" saved!");
+            // console.log("Effect "+effect.getName()+" saved!");
             return success;
 
         })
@@ -62,16 +66,16 @@ export default class FileSystemManager {
     async loadEffects() {
         effectsList = [];
         effectFiles = await this.readDirPdFilenames(this.SAVE_PATH);
-        for (i=0; i<effectFiles.length; i++) {
-            await RNFS.readFile(this.SAVE_PATH+effectFiles[i]+".pd", 'utf8')
+        await effectFiles.forEach(async (filename) => {
+            await RNFS.readFile(this.SAVE_PATH+filename+".pd", 'utf8')
             .then(effectData => {
-                effect = new Effect(effectFiles[i], effectData);
+                effect = {'name': filename, 'components': effectData.split("\r\n")}
                 effectsList.push(effect);
             })
             .catch(err => {
-                console.log("Failed to read effect "+effectFiles[i]+": "+err.message);
+                console.log("ERROR: Failed to read effect "+filename+": "+err.message);
             });
-        }
+        });
         return effectsList;
     }
 
@@ -83,11 +87,11 @@ export default class FileSystemManager {
     async deleteEffect(effect) {
         await RNFS.unlink(this.SAVE_PATH+effect.getName()+".pd")
         .then(success => {
-            console.log("Successfully deleted the file!");
+            // console.log("Successfully deleted the file!");
             return success;
         })
         .catch(err => {
-            console.log("Could not delete the file ''"+effect.getName()+"': "+err.message);
+            console.log("ERROR: Could not delete the file ''"+effect.getName()+"': "+err.message);
             return false;
         })
     }
@@ -102,7 +106,7 @@ export default class FileSystemManager {
         .then(pdFiles => {
             return pdFiles.map(f => f.name).filter(f => f.endsWith(".pd")).map(f => f.substring(0, f.length-3));
         })
-        .catch(err => console.log("Failed to read folder! "+err.message));
+        .catch(err => console.log("ERROR: Failed to read folder! "+err.message));
     }
 
     /**
@@ -113,6 +117,6 @@ export default class FileSystemManager {
     async readDir(path) {
         return await RNFS.readDir(path)
         .then(files => { return files; })
-        .catch(err => console.log("Failed to read folder! "+err.message));
+        .catch(err => console.log("ERROR: Failed to read folder! "+err.message));
     }
 }

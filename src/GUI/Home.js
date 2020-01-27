@@ -14,7 +14,6 @@ export default class Home extends Component {
 
         this.netManager = new NetworkManager();
         this.fsManager = new FileSystemManager();
-        this.fsManager.testStuff();
 
         this.state = {
             effects: [],
@@ -28,6 +27,8 @@ export default class Home extends Component {
         this.setState({
             effects: effects,
         });
+
+        await this.fsManager.testStuff();
     }
 
 
