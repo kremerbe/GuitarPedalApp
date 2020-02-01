@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Button } from 'react-native';
 import NetworkManager from '../Logic/NetworkManager';
 import FileSystemManager from './../Logic/FileSystemManager';
 import PureDataManager from './../Logic/PureDataManager';
 import EffectList from './EffectList';
+import Effect from './../EffectsObjects/Effect';
+import AppComponent from '../EffectsObjects/AppComponent';
 
 export default class Home extends Component {
 
@@ -16,8 +18,19 @@ export default class Home extends Component {
         this.fsManager = new FileSystemManager();
 
         this.state = {
-            effects: [],
+            effects: [this.createTestEffect()],
         }
+    }
+
+    createTestEffect = () => {
+        audioIn = new AppComponent("adc~", 2, 2);
+        audioOut = new AppComponent("dac~", 2, 2);
+        extra = new AppComponent("extra~", 2, 2);
+        compList1 = [];
+        compList1.push(audioIn);
+        compList1.push(audioOut);
+        compList1.push(extra);
+        return new Effect("passthrough", compList1);
     }
 
     componentDidMount = async () => {
@@ -35,7 +48,16 @@ export default class Home extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.text}>Hello!</Text>
+                {/* <Text style={styles.text}>Hello!</Text> */}
+                <Text style={styles.text}>Test Text!</Text>
+                <TouchableOpacity
+                    onPress={() => {
+                        this.netManager.scanAndConnect();
+                        console.log("Trying to connect...");
+                    }}
+                >
+                    <Text style={styles.text}>BlueTooth</Text>
+                </TouchableOpacity>
                 <EffectList effects={this.state.effects}/>
             </View>
         );

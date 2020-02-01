@@ -37,10 +37,12 @@ export default class NetworkManager {
                 // Handle error (scanning will be stopped automatically)
                 return
             }
+
+            console.log("Found device: ", device.name);
     
             // Check if it is a device you are looking for based on advertisement data
             // or other criteria.
-            if (device.name === 'GuitarPedal'){
+            if (device.name === 'MSOE-54RW5Q2') { //'GuitarPedal'){
                 
                 // Stop scanning as it's not necessary if you are scanning for one device.
                 this.manager.stopDeviceScan(); 

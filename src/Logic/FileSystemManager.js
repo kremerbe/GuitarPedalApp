@@ -64,18 +64,23 @@ export default class FileSystemManager {
      * @returns {Array{Effect}} an array of Effect objects created from the saved PD files.
      */
     async loadEffects() {
-        effectsList = [];
         effectFiles = await this.readDirPdFilenames(this.SAVE_PATH);
-        await effectFiles.forEach(async (filename) => {
-            await RNFS.readFile(this.SAVE_PATH+filename+".pd", 'utf8')
+
+        const effectsList = Promise.all(effectFiles.map(async (filename) => {
+            effectData = await RNFS.readFile(this.SAVE_PATH+filename+".pd", 'utf8')
             .then(effectData => {
-                effect = {'name': filename, 'components': effectData.split("\r\n")}
-                effectsList.push(effect);
+                return effectData.split("\r\n");
             })
             .catch(err => {
                 console.log("ERROR: Failed to read effect "+filename+": "+err.message);
             });
-        });
+
+            return {
+                'name': filename,
+                'components': effectData
+            };
+        }));
+
         return effectsList;
     }
 
