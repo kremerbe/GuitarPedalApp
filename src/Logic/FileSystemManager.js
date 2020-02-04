@@ -80,7 +80,6 @@ export default class FileSystemManager {
                 'components': effectData
             };
         }));
-
         return effectsList;
     }
 

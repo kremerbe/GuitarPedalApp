@@ -16,6 +16,7 @@ export default class Home extends Component {
 
         this.netManager = new NetworkManager();
         this.fsManager = new FileSystemManager();
+        this.pdManager = new PureDataManager();
 
         this.state = {
             effects: [this.createTestEffect()],
@@ -36,12 +37,12 @@ export default class Home extends Component {
     componentDidMount = async () => {
         effects = await this.fsManager.loadEffects();
         console.log("Loaded Effects!");
-        console.log(effects);
         this.setState({
             effects: effects,
         });
 
         await this.fsManager.testStuff();
+        this.pdManager.pdToApp(effects);
     }
 
 
