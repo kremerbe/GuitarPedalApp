@@ -26,6 +26,7 @@ export default class NetworkManager {
      * I would like for it to accept regardless of the device name.
      */
     scanAndConnect() {
+        console.log("Scan and connect check");
 
         /**
          * Bluetooth Scanning must be done before we can connect to the device. Once the 
@@ -35,14 +36,16 @@ export default class NetworkManager {
         this.manager.startDeviceScan(null, null, (error, device) => {
             if (error) {
                 // Handle error (scanning will be stopped automatically)
-                return
+                console.log("ERROR",error);
+                return false;
             }
 
-            console.log("Found device: ", device.name);
+            console.log("Found device: ", device.name, ", ", device.id);
     
             // Check if it is a device you are looking for based on advertisement data
             // or other criteria.
-            if (device.name === 'MSOE-54RW5Q2') { //'GuitarPedal'){
+            if (device.id === 'B8:27:EB:50:B4:BB') { //'GuitarPedal'){
+                console.log("FOUND RPI!!!")
                 
                 // Stop scanning as it's not necessary if you are scanning for one device.
                 this.manager.stopDeviceScan(); 
