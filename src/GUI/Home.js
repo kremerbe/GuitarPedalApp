@@ -16,6 +16,7 @@ export default class Home extends Component {
 
         this.netManager = new NetworkManager();
         this.fsManager = new FileSystemManager();
+        this.pdManager = new PureDataManager();
 
         this.state = {
             effects: [],
@@ -36,13 +37,15 @@ export default class Home extends Component {
     componentDidMount = async () => {
         // This effects is a list of tuples not a list of Effects yet
         effects = await this.fsManager.loadEffects();
-        // console.log("Loaded Effects!");
-        // console.log(effects);
+        console.log("Loaded Effects!");
+        console.log(effects);
+		
         this.setState({
             effects: this.createTestEffects(),
         });
 
         // await this.fsManager.testStuff();
+        this.pdManager.pdToApp(effects);
     }
 
     // askPermissions = async () => {
