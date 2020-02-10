@@ -1,5 +1,7 @@
 
 export default class Effect {
+
+
     constructor(name, components) {
         this._name = name;
         this._components = components;

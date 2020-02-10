@@ -38,38 +38,39 @@ export default class PureDataManager {
         console.log(s);
     }
 
-    pdToApp(effects)
+    pdToApp(effect)
     {
-        effects.forEach(effect => {
-            console.log(effect.name);
-            console.log(effect.components);
-            console.log(effect.components.length);
-            effect.components.forEach(line => {
-                subLine = line.split(" ");
-                if(subLine[0] == "#X") {
-                    if(subLine[1] == "connect") {
-                        console.log("Connect object #" + subLine[2]+ " Output Port#: " + subLine[3] + ".\r\nTo object #" + subLine[4] + ". Input Port#: " + subLine[5]);
-                    } else if(subLine[1] == "obj") {
-                        console.log("Name: " + subLine[4]);
-                        // Need to make sure that we support the incomming component
-                            if(subLine.length <= 5)     // If the component has any parameters
-                            {
-                                console.log("No Parameters");
-                            } else {
-                                params = [];
-                                for(x = 5; x < subLine.length; x++) {       // Parameter loop
-                                    params[x-5] = subLine[x];
-                                }
-                                console.log(params);
+        effect.components.forEach(line => {
+            subLine = line.split(" ");
+            connectMap = new Map;
+            if(subLine[0] == "#X") {
+                if(subLine[1] == "connect") {
+                    console.log("Connect object #" + subLine[2]+ " Output Port#: " + subLine[3] + ".\r\nTo object #" + subLine[4] + ". Input Port#: " + subLine[5]);
+                    connectMap.set(subLine[2] + "." + subLine[3], subLine[4] + "." + subLine[5])
+                } else if(subLine[1] == "obj") {
+                    console.log("Name: " + subLine[4]);
+                    // Need to make sure that we support the incomming component
+                        if(subLine.length <= 5)     // If the component has any parameters
+                        {
+                            console.log("No Parameters");
+                        } else {
+                            params = [];
+                            for(x = 5; x < subLine.length; x++) {       // Parameter loop
+                                params[x-5] = subLine[x];
                             }
-                            // create new effect
-                    } else {
-                        return;
-                    }
+                            console.log(params);
+                        }
+                    
                 } else {
                     return;
                 }
-            });
+            } else {
+                return;
+            }
+        });
+        connectMap.forEach(connection => {
+            console.log("Connection\n\r");
+            console.log(connection);
         });
     }
 }

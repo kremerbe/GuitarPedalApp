@@ -42,7 +42,14 @@ export default class Home extends Component {
         });
 
         await this.fsManager.testStuff();
-        this.pdManager.pdToApp(effects);
+        
+        /**
+         * This should be used to find the effect the user wants to 
+         * display on the gui and then convert it
+         */
+        effects.forEach(effect => {
+            this.pdManager.pdToApp(effect);
+        });
     }
 
 
