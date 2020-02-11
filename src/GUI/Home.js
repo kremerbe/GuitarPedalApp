@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Button, PermissionsAndroid } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Button, PermissionsAndroid, ClippingRectangle } from 'react-native';
 import NetworkManager from '../Logic/NetworkManager';
 import FileSystemManager from './../Logic/FileSystemManager';
 import PureDataManager from './../Logic/PureDataManager';
@@ -36,16 +36,16 @@ export default class Home extends Component {
 
     componentDidMount = async () => {
         // This effects is a list of tuples not a list of Effects yet
-        effects = await this.fsManager.loadEffects();
-        console.log("Loaded Effects!");
-        console.log(effects);
+        // effects = await this.fsManager.loadEffects();
+        // console.log("Loaded Effects!");
+        // console.log(effects);
 		
         this.setState({
             effects: this.createTestEffects(),
         });
 
         // await this.fsManager.testStuff();
-        this.pdManager.pdToApp(effects);
+        // this.pdManager.pdToApp(effects);
     }
 
     // askPermissions = async () => {
@@ -63,16 +63,7 @@ export default class Home extends Component {
     render() {
         return (
             <View style={styles.container}>
-                {/* <Text style={styles.text}>Hello!</Text> */}
-                {/* {this.renderHeader()} */}
-                <TouchableOpacity
-                    onPress={() => {
-                        this.netManager.scanAndConnect();
-                        console.log("Trying to connect...");
-                    }}
-                >
-                    <Text style={styles.text}>Bluetooth</Text>
-                </TouchableOpacity>
+                {this.renderHeader()}
                 <View style={styles.horizontalCont}>
                     <View style={styles.effectList}>
                         <EffectList effects={this.state.effects}/>
@@ -85,16 +76,20 @@ export default class Home extends Component {
 
     renderHeader = () => {
         return (
-            <View style={styles.horizontalCont}>
+            <View style={styles.header}>
+                <View style={styles.spacer}/>
                 <Text style={styles.text}>Guitar Pedal App</Text>
-                <TouchableOpacity
-                    onPress={() => {
-                        this.netManager.scanAndConnect();
-                        console.log("Trying to connect...");
-                    }}
-                >
-                    <Text style={styles.text}>Bluetooth</Text>
-                </TouchableOpacity>
+                <View style={[styles.spacer, {justifyContent: 'flex-end'}]}>
+                    <TouchableOpacity 
+                        style={styles.bTButton}
+                        onPress={() => {
+                            console.log("Trying to connect...");
+                            this.netManager.manualConnect();
+                        }}
+                    >
+                        <Text style={styles.buttonText}>Bluetooth</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         )
     }
@@ -103,18 +98,34 @@ export default class Home extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-
+        alignItems: 'center'
+        // justifyContent: 'center',
     },
-    text: {
-        fontFamily: 'sans-serif',
-        color: '#a8c87c',
-        fontSize: 20,
+    header: {
+        flexDirection: 'row',
+        backgroundColor: '#000000',
+        alignItems: 'center',
+        padding: 5,
     },
     horizontalCont: {
         flex: 1,
         flexDirection: 'row',
         backgroundColor: '#000000',
+    },
+    bTButton: {
+        backgroundColor: '#0000ff',
+        padding: 7,
+        borderRadius: 10,
+    },
+    buttonText: {
+        fontFamily: 'sans-serif',
+        color: '#ffffff',
+        fontSize: 18,
+    },
+    text: {
+        fontFamily: 'sans-serif',
+        color: '#ffffff',
+        fontSize: 20,
     },
     effectList: {
         flex: 2,

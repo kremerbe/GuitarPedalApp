@@ -1,4 +1,5 @@
-import {BleManager, Service, Characteristic} from 'react-native-ble-plx';
+
+import {BleManager, Service, Characteristic, RefreshGattMoment} from 'react-native-ble-plx';
 
 export default class NetworkManager {
 
@@ -21,19 +22,46 @@ export default class NetworkManager {
         // IDK
     }
 
+    manualConnect() {
+        console.log("Manually connecting to RPi...");
+        id = 'B8:27:EB:50:B4:BB'
+        
+        this.manager.connectToDevice(id)
+        .then((device) => {
+            console.log("Discovering services and characteristics...");
+            return device.discoverAllServicesAndCharacteristics();
+        })
+        .then(() => {
+            console.log("Listening...");
+        },
+        (error) => {
+            console.log("Connection error: ");
+            console.log(JSON.stringify(error));
+        });
+    }
+
     /**
      * Scans and connects to a device depending on the device name. In the future
      * I would like for it to accept regardless of the device name.
      */
-    scanAndConnect() {
+    async scanAndConnect() {
         console.log("Scan and connect check");
+        // console.log("Connected devices:");
+        // devices = this.manager.connectedDevices()
+        // .then((devices) => {
+        //     console.log("Connected devices:");
+        //     console.log(devices);
+        // }, (error) => {
+        //     console.log("Find devices error: ");
+        //     console.log(error);
+        // });
 
         /**
          * Bluetooth Scanning must be done before we can connect to the device. Once the 
          * device is saved and all servies and characteristics are discovered
          * the device can be connected to.
          */
-        this.manager.startDeviceScan(null, null, (error, device) => {
+        this.manager.startDeviceScan(null, null, async (error, device) => {
             if (error) {
                 // Handle error (scanning will be stopped automatically)
                 console.log("ERROR",error);
@@ -45,36 +73,66 @@ export default class NetworkManager {
             // Check if it is a device you are looking for based on advertisement data
             // or other criteria.
             if (device.id === 'B8:27:EB:50:B4:BB') { //'GuitarPedal'){
-                console.log("FOUND RPI!!!")
+                console.log("FOUND RPi!!!");
+                await this.disconnectionListener(device);
                 
                 // Stop scanning as it's not necessary if you are scanning for one device.
-                this.manager.stopDeviceScan(); 
-                // Proceed with connection.
+                this.manager.stopDeviceScan();
+
+                connected = await device.isConnected();
+                this.device = device;
+                if (connected) {
+                    console.log("Already connected.");
+                    await this.disconnect();
+                    nowConnected = await device.isConnected();
+                    console.log("Connected now?? ", nowConnected);
+
+                } else {
+                    console.log("Connecting...");
+                    await this.connect();
+
+                    await this.disconnect();
+                }
             }
+        });
+    }
+
+    async disconnectionListener(device) {
+        console.log("Adding listener...");
+        await device.onDisconnected((error, device) => {
+            console.log("Device disconnected...", error);
         });
     }
 
     /**
      * Connects to the previously scanned device
      */
-    connect(){
-        device.connect()
-            .then((device) => {
-                return device.discoverAllServicesAndCharacteristics()
-            })
-            .then((device) => {
-                // Do work on device with services and characteristics
-            })
-            .catch((error) => {
-                // Handle errors
-            });
+    async connect() {
+        await this.device.connect({refreshGatt: RefreshGattMoment, allowDuplicates: true, timeout: 10000})
+        .then((device) => {
+            console.log("Discovering services and characteristics...");
+            // this.info("Discovering services and characteristics");
+            return device.discoverAllServicesAndCharacteristics();
+        })
+        .then(() => {
+            // this.info("Listening...");
+            console.log("Listening...");
+        }, 
+        // (rejected) => {
+        //     console.log("Connection rejected: ", rejected.message);
+        // }, 
+        (error) => {
+            console.log("Connection error: ");
+            console.log(JSON.stringify(error));
+            // this.error(error.message);
+        });
     }
     
     /**
      * Disconnects the device
      */
-    disconnect() {
-        this.manager.cancelDeviceConnection(device.id);
+    async disconnect() {
+        await this.manager.cancelDeviceConnection(this.device.id);
     }
 
 
