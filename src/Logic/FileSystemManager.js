@@ -20,9 +20,8 @@ export default class FileSystemManager {
         compList1 = [];
         compList1.push(audioIn);
         compList1.push(audioOut);
-        compList1.push(extra);
         testEffect1 = new Effect("passthrough", compList1);
-        testEffect2 = new Effect("otherShit", compList1);
+        testEffect2 = new Effect("helloWorld", compList1);
         console.log("Initial files:");
         console.log(await this.readDir(this.SAVE_PATH));
         
@@ -39,6 +38,7 @@ export default class FileSystemManager {
         console.log("AppToPD Tests:");
         console.log(testEffect1.AppToPD());
         console.log(testEffect2.AppToPD());
+        
     }
 
     /**
