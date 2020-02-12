@@ -25,18 +25,20 @@ export default class EffectList extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.text}>Saved Effects:</Text>
+                <View style={styles.header}>
+                    <Text style={styles.text}>Saved Effects:</Text>
+                </View>
                 <FlatList
                     data={this.state.effects}
                     renderItem={({item}) => (
                         <View style={styles.row}>
                             <Text style={styles.text}>{item.getName()}</Text>
                             <View style={styles.spacer}/>
-                            <TouchableOpacity>
-                                <Text style={styles.button}>{'Edit'}</Text>
+                            <TouchableOpacity style={styles.editButton}>
+                                <Text style={styles.buttonText}>{'Edit'}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity>
-                                <Text style={styles.button}>{'>'}</Text>
+                                <Text style={styles.buttonText}>{'>'}</Text>
                             </TouchableOpacity>
                         </View>
                     )}
@@ -57,6 +59,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#a7d897',
         margin: 5,
     },
+    header: {
+        alignItems: 'center',
+    },
     row: {
         flex: 1,
         flexDirection: 'row',
@@ -70,9 +75,19 @@ const styles = StyleSheet.create({
         fontFamily: 'sans-serif',
         fontSize: 24,
     },
-    button: {
+    editButton: {
+        backgroundColor: '#e0e0e0',
+        padding: 5,
+        borderRadius: 10,
+        marginRight: 10,
+    },
+    sendButton: {
+        backgroundColor: '#e0e0e0',
+        padding: 5,
+        borderRadius: 10,
+    },
+    buttonText: {
         fontFamily: 'sans-serif',
-        fontSize: 24,
-        marginRight: 10
+        fontSize: 20,
     },
 });
