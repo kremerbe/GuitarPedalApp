@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Button, PermissionsAndroid, ClippingRectangle } from 'react-native';
-import NetworkManager from '../Logic/NetworkManager';
+import NetworkManager2 from '../Logic/NetworkManager2';
 import FileSystemManager from './../Logic/FileSystemManager';
 import PureDataManager from './../Logic/PureDataManager';
 import EffectList from './EffectList';
@@ -14,7 +14,7 @@ export default class Home extends Component {
     constructor(props){
         super(props);
 
-        this.netManager = new NetworkManager();
+        this.netManager = new NetworkManager2();
         this.fsManager = new FileSystemManager();
         this.pdManager = new PureDataManager();
 
@@ -91,7 +91,7 @@ export default class Home extends Component {
                         style={styles.bTButton}
                         onPress={() => {
                             console.log("Trying to connect...");
-                            this.netManager.manualConnect();
+                            this.netManager.initialize();
                         }}
                     >
                         <Text style={styles.buttonText}>Bluetooth</Text>
