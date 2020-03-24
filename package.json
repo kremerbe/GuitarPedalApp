@@ -10,7 +10,6 @@
     "react": "16.8.3",
     "react-native": "0.59.10",
     "react-native-ble-plx": "^1.1.0",
-    "react-native-bluetooth-classic": "0.9",
     "react-native-fs": "^2.16.2",
     "react-native-gesture-handler": "1.2.1",
     "react-navigation": "^4.0.10"
