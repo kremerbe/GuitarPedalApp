@@ -9,8 +9,8 @@ export default class FileSystemManager {
 
 
     constructor() {
-        // console.log("File System Manager start check!");
-        // console.log("Save filepath: "+this.SAVE_PATH);
+        console.log("File System Manager start check!");
+        //console.log("Save filepath: "+this.SAVE_PATH);
     }
 
     async testStuff() {
@@ -38,7 +38,10 @@ export default class FileSystemManager {
         console.log("AppToPD Tests:");
         console.log(testEffect1.AppToPD());
         console.log(testEffect2.AppToPD());
-        
+    }
+
+    async testLoadEffects() {
+         return this.loadEffects();
     }
 
     /**

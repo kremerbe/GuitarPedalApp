@@ -1,7 +1,13 @@
 
 export default class Effect {
+    
+    connections;
 
-
+    /**
+     * WTF you can only have one constructor........
+     * @param {} name 
+     * @param {*} components 
+     */
     constructor(name, components) {
         this._name = name;
         this._components = components;
@@ -25,6 +31,20 @@ export default class Effect {
         return this._components;
     }
 
+    //Todo: Fix this shit. Private/public/protected
+    setName(name) {
+        this._name = name;
+    }
+
+    //Todo: Fix this shit. Private/public/protected
+    setComponents(components) {
+        this._components = components;
+    }
+
+    setConnections(connections) {
+        this.connections = connections;
+    }
+
     AppToPD () {
         let compList = this._components.slice();
         let x = 0; 
@@ -40,5 +60,12 @@ export default class Effect {
         s = s + "#X connect 0 0 1 0;\r\n"; 
         s = s + "#X connect 0 1 1 1;\r\n"; 
         return s;
+    }
+
+    printConnections() {
+        connections.forEach(connection => {
+            console.log("Connection\n\r");
+            console.log(connection);
+        });
     }
 }

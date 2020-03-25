@@ -21,6 +21,27 @@ export default class Home extends Component {
         this.state = {
             effects: [],
         }
+        
+        newEffects = new Array();
+        sEffects = this.fsManager.loadEffects().then((obj) => {
+            console.log("Shit's Loaded!");
+            console.log(obj);
+            obj.forEach(x => {
+                console.log(x.name);
+                console.log(x.components);          
+                newEffects.push(this.pdManager.pdToApp(x));
+            });
+            this.setState({
+                effects: newEffects,
+            });
+
+            /** Not working newEffects and effects undefined.... */
+            for(i = 0; i < newEffects.length; i++)
+            {
+                console.log("Effect: " + newEffects[i].name);
+            }
+        });
+
     }
 
     createTestEffects = () => {
