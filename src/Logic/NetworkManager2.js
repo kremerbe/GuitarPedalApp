@@ -3,15 +3,25 @@ import RNBluetoothClassic, { BTEvents, BTCharsets } from 'react-native-bluetooth
 export default class NetworkManager2 {
 
     device; // the pedal connected to the app
-    
 
     constructor() {
         
     }
 
-    
+    async enable() {
+        let enabled = await RNBluetoothClassic.isEnabled();
+        if (!enabled) {
+            try {
+                enabled = await RNBluetoothClassic.requestEnable();
+            } catch (err) {
+                console.log(err);
+                enabled = false;
+            }
+        }
+        return enabled;
+    }
 
-    async initialize() {
+    async testBT() {
         // let enabled = await RNBluetoothClassic.isEnabled();
         try {
             let enabled = await RNBluetoothClassic.isEnabled();

@@ -1,11 +1,21 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Button, PermissionsAndroid, ClippingRectangle } from 'react-native';
-import NetworkManager from '../Logic/NetworkManager';
+import { View, StyleSheet, Text, TouchableOpacity, Button, PermissionsAndroid, ClippingRectangle, Image } from 'react-native';
+import NetworkManager2 from '../Logic/NetworkManager2';
 import FileSystemManager from './../Logic/FileSystemManager';
 import PureDataManager from './../Logic/PureDataManager';
 import EffectList from './EffectList';
 import Effect from './../EffectsObjects/Effect';
 import AppComponent from '../EffectsObjects/AppComponent';
+import { RNBluetoothClassic } from 'react-native-bluetooth-classic';
+
+
+// enums for bluetooth status
+const BTStatus = {
+    OFF: "Bluetooth Off",
+    NOT_PAIRED: "Not paired to Pi",
+    NOT_CONNECTED: "Not connected",
+    CONNECTED: "Connected!"
+}
 
 export default class Home extends Component {
 
@@ -14,21 +24,22 @@ export default class Home extends Component {
     constructor(props){
         super(props);
 
-        this.netManager = new NetworkManager();
+        this.netManager = new NetworkManager2();
         this.fsManager = new FileSystemManager();
         this.pdManager = new PureDataManager();
 
         this.state = {
+            bTStatus: BTStatus.OFF,
             effects: [],
         }
         
         newEffects = new Array();
         sEffects = this.fsManager.loadEffects().then((obj) => {
-            console.log("Shit's Loaded!");
-            console.log(obj);
+            // console.log("Shit's Loaded!");
+            // console.log(obj);
             obj.forEach(x => {
-                console.log(x.name);
-                console.log(x.components);          
+                // console.log(x.name);
+                // console.log(x.components);          
                 newEffects.push(this.pdManager.pdToApp(x));
             });
             this.setState({
@@ -36,10 +47,10 @@ export default class Home extends Component {
             });
 
             /** Not working newEffects and effects undefined.... */
-            for(i = 0; i < newEffects.length; i++)
-            {
-                console.log("Effect: " + newEffects[i].name);
-            }
+            // for(i = 0; i < newEffects.length; i++)
+            // {
+            //     console.log("Effect: " + newEffects[i].name);
+            // }
         });
 
     }
@@ -65,6 +76,11 @@ export default class Home extends Component {
             effects: this.createTestEffects(),
         });
 
+        let enabled = await this.netManager.enable();
+        if (enabled) {
+            this.setState({ bTStatus: BTStatus.NOT_PAIRED })
+        }
+
         // await this.fsManager.testStuff();
         
         /**
@@ -75,6 +91,8 @@ export default class Home extends Component {
         //     this.pdManager.pdToApp(effect);
         // });
     }
+
+
 
     // askPermissions = async () => {
     //     try {
@@ -91,12 +109,10 @@ export default class Home extends Component {
     render() {
         return (
             <View style={styles.container}>
-                {this.renderHeader()}
+                {/* {this.renderHeader()} */}
                 <View style={styles.horizontalCont}>
-                    <View style={styles.effectList}>
-                        <EffectList effects={this.state.effects}/>
-                    </View>
-                    <View style={styles.pedalDisplay}></View>
+                    {this.renderEffectList()}
+                    {this.renderPedalDisplay()}
                 </View>
             </View>
         );
@@ -112,14 +128,47 @@ export default class Home extends Component {
                         style={styles.bTButton}
                         onPress={() => {
                             console.log("Trying to connect...");
-                            this.netManager.manualConnect();
+                            this.netManager.testBT();
                         }}
                     >
                         <Text style={styles.buttonText}>Bluetooth</Text>
                     </TouchableOpacity>
                 </View>
             </View>
-        )
+        );
+    }
+
+    renderEffectList = () => {
+        return (
+            <View style={styles.effectList}>
+                <EffectList effects={this.state.effects}/>
+            </View>
+        );
+    }
+
+    renderPedalDisplay = () => {
+        return (
+            <View style={styles.pedalDisplay}>
+                <View style={styles.header}>
+                    <Text style={styles.text}>{"Status: "+this.state.bTStatus}</Text>
+                    <View style={[styles.spacer, {justifyContent: 'flex-end'}]}>
+                        <TouchableOpacity 
+                            style={styles.bTButton}
+                            onPress={() => {
+                                console.log("Trying to connect...");
+                                this.netManager.testBT();
+                            }}
+                        >
+                            <Text style={styles.buttonText}>Bluetooth</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <Image 
+                    source={require('../../PedalImage.png')}
+                    style={styles.pedalImg}
+                />
+            </View>
+        );
     }
 }
 
@@ -163,7 +212,14 @@ const styles = StyleSheet.create({
         flex: 3,
         backgroundColor: '#9a7d89',
         margin: 5,
-        flexDirection: 'row'
+        flexDirection: 'column',
+    },
+    pedalImg: {
+        flex: 1,
+        width: null,
+        height: null,
+        resizeMode: 'contain',
+        //...StyleSheet.absoluteFillObject,
     },
     spacer: {
         flex: 1,
