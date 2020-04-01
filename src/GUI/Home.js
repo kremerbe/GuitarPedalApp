@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Button, PermissionsAndroid, ClippingRectangle, Image } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, PermissionsAndroid, Image, Alert, ClippingRectangle } from 'react-native';
 import NetworkManager2 from '../Logic/NetworkManager2';
 import FileSystemManager from './../Logic/FileSystemManager';
 import PureDataManager from './../Logic/PureDataManager';
 import EffectList from './EffectList';
 import Effect from './../EffectsObjects/Effect';
 import AppComponent from '../EffectsObjects/AppComponent';
-import { RNBluetoothClassic } from 'react-native-bluetooth-classic';
 
 
 // enums for bluetooth status
 const BTStatus = {
     OFF: "Bluetooth Off",
-    NOT_PAIRED: "Not paired to Pi",
     NOT_CONNECTED: "Not connected",
     CONNECTED: "Connected!"
 }
+
+const rPiName = "Yo Mum";
 
 export default class Home extends Component {
 
@@ -76,10 +76,9 @@ export default class Home extends Component {
             effects: this.createTestEffects(),
         });
 
-        let enabled = await this.netManager.enable();
-        if (enabled) {
-            this.setState({ bTStatus: BTStatus.NOT_PAIRED })
-        }
+        this.bTStartupSequence();
+
+        this.netManager.addBTOnOffListeners(this.onBTOff,this.onBTOn);
 
         // await this.fsManager.testStuff();
         
@@ -90,6 +89,10 @@ export default class Home extends Component {
         // effects.forEach(effect => {
         //     this.pdManager.pdToApp(effect);
         // });
+    }
+
+    componentWillUnmount() {
+        this.netManager.deleteListeners();
     }
 
 
@@ -104,6 +107,34 @@ export default class Home extends Component {
     //         )
     //     }
     // }
+
+    onBTOff = () => {
+        this.setState({ bTStatus: BTStatus.OFF });
+    }
+
+    onBTOn = () => {
+        this.bTStartupSequence();
+    }
+
+    bTStartupSequence = async () => {
+        let enabled = await this.netManager.enable();
+        if (enabled) {
+            this.setState({ bTStatus: BTStatus.NOT_CONNECTED });
+        }
+    }
+
+    connectToPi = async () => {
+        let pairedToPi = await this.netManager.checkPaired(rPiName);
+        if (!pairedToPi) this.sendPairToPiAlert();
+    }
+
+    sendPairToPiAlert = () => {
+        Alert.alert(
+            'Pair to Pedal',
+            "Make sure to pair your phone with the guitar pedal named '"+rPiName+"' using your phone's bluetooth interface before connecting.",
+            [{text: "OK"}]
+        );
+    }
 
 
     render() {
@@ -131,7 +162,7 @@ export default class Home extends Component {
                             this.netManager.testBT();
                         }}
                     >
-                        <Text style={styles.buttonText}>Bluetooth</Text>
+                        <Text style={styles.buttonText}>Connect</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -147,19 +178,22 @@ export default class Home extends Component {
     }
 
     renderPedalDisplay = () => {
+        let btButtonDisabled = this.state.bTStatus === BTStatus.OFF;
+
         return (
             <View style={styles.pedalDisplay}>
                 <View style={styles.header}>
                     <Text style={styles.text}>{"Status: "+this.state.bTStatus}</Text>
                     <View style={[styles.spacer, {justifyContent: 'flex-end'}]}>
                         <TouchableOpacity 
-                            style={styles.bTButton}
+                            disabled={btButtonDisabled}
+                            style={[styles.bTButton,{opacity: btButtonDisabled? 0.5: 1}]}
                             onPress={() => {
                                 console.log("Trying to connect...");
-                                this.netManager.testBT();
+                                this.connectToPi();
                             }}
                         >
-                            <Text style={styles.buttonText}>Bluetooth</Text>
+                            <Text style={styles.buttonText}>Connect</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

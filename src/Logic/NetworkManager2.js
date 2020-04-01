@@ -5,7 +5,28 @@ export default class NetworkManager2 {
     device; // the pedal connected to the app
 
     constructor() {
-        
+        this.events = [];
+    }
+
+    addBTOnOffListeners(bTOffFunc, bTOnFunc) {
+        this.events.push(
+            RNBluetoothClassic.addListener(
+                BTEvents.BLUETOOTH_DISABLED,
+                bTOffFunc,
+                this
+            )
+        );
+        this.events.push(
+            RNBluetoothClassic.addListener(
+                BTEvents.BLUETOOTH_ENABLED,
+                bTOnFunc,
+                this
+            )
+        );
+    }
+
+    deleteListeners() {
+        this.events.forEach(event => event.remove());
     }
 
     async enable() {
@@ -19,6 +40,17 @@ export default class NetworkManager2 {
             }
         }
         return enabled;
+    }
+
+    async checkPaired(deviceName) {
+        let pairedDevices = await RNBluetoothClassic.list();
+        // console.log("Paired Devices: ",pairedDevices);
+        // checks if a device with the name piName exists in the list
+        return pairedDevices.some(device => device.name === deviceName);
+    }
+
+    async connectToDevice(deviceName) {
+
     }
 
     async testBT() {
