@@ -8,6 +8,11 @@ export default class NetworkManager2 {
         this.events = [];
     }
 
+    /**
+     * Creates listeners for when bluetooth is turned on or off and handles it with the given functions.
+     * @param {Function} bTOffFunc what to do when bluetooth is turned off.
+     * @param {Function} bTOnFunc what to do when bluetooth is turned on.
+     */
     addBTOnOffListeners(bTOffFunc, bTOnFunc) {
         this.events.push(
             RNBluetoothClassic.addListener(
@@ -25,10 +30,17 @@ export default class NetworkManager2 {
         );
     }
 
+    /**
+     * Deletes any active bluetooth listeners.
+     */
     deleteListeners() {
         this.events.forEach(event => event.remove());
     }
 
+    /**
+     * Checks if bluetooth is enabled and if not, requests it to be enabled.
+     * @returns whether bluetooth is on or off once the function concludes.
+     */
     async enable() {
         let enabled = await RNBluetoothClassic.isEnabled();
         if (!enabled) {
@@ -42,6 +54,11 @@ export default class NetworkManager2 {
         return enabled;
     }
 
+    /**
+     * Checks if paired with the given device.
+     * @param {String} deviceName the device name of the device to check pairing for.
+     * @returns whether or not the given device is paired.
+     */
     async checkPaired(deviceName) {
         let pairedDevices = await RNBluetoothClassic.list();
         // console.log("Paired Devices: ",pairedDevices);
@@ -49,10 +66,80 @@ export default class NetworkManager2 {
         return pairedDevices.some(device => device.name === deviceName);
     }
 
+    /**
+     * Attempts to connect to the device with the given device name.
+     * @param {String} deviceName the device name of the device to try to connect to.
+     * @returns whether or not it connected successfully.
+     */
     async connectToDevice(deviceName) {
+        deviceId = await this._getPairedDeviceId(deviceName);
+        if (deviceId === null) {
+            return false;
+        } else {
 
+            console.log("Attempting to connect...");
+            try {
+                newDevice = await RNBluetoothClassic.connect(deviceId);
+                connected = await RNBluetoothClassic.isConnected();
+                if (connected) {
+                    this.device = newDevice;
+                    return true;
+                }
+                return false;
+            } catch(err) {
+                console.log(err);
+                return false;
+            }
+        }
     }
 
+    /**
+     * Gets the device ID of the currently paired device with the given device name.
+     * @param {String} deviceName the name of the device to get the device ID for.
+     * @returns null if no device is found with that name, or else returns the found device.
+     */
+    async _getPairedDeviceId(deviceName) {
+        let pairedDevices = await RNBluetoothClassic.list();
+        foundDevices = pairedDevices.filter(device => device.name === deviceName);
+        if (foundDevices.length < 1) return null;
+        else if (foundDevices.length == 1) return pairedDevices[0].id;
+        else {  // multiple devices with that name found (unlikely)
+            // TODO: handle this situation better
+            console.log("Warning: multiple devices found (returning the first...): ",foundDevices);
+            return pairedDevices[0].id;
+        }
+    }
+
+    sendEffect() {
+        
+    }
+
+    /**
+     * Sets the saved device to null. Only to be used when bluetooth is manually turned off.
+     */
+    deleteDevice() {
+        this.device = null;
+    }
+
+    /**
+     * Attempts to disconnect from the currently connected device.
+     * @returns whether or not it successfully disconnected.
+     */
+    async disconnectFromDevice() {
+        console.log("Disconnecting...");
+        disconnected = await RNBluetoothClassic.disconnect();
+        if (disconnected) {
+            this.device = null;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Tests the following RNBluetoothClassic methods in sequence: enable bluetooth,
+     * listing paired devices, checking is connected, getting the connection, connecting,
+     * writing to the device, then disconnecting. Prints out encountered errors.
+     */
     async testBT() {
         // let enabled = await RNBluetoothClassic.isEnabled();
         try {
@@ -90,32 +177,5 @@ export default class NetworkManager2 {
             console.log("ERROR: ");
             console.log(err);
         }
-    }
-
-    /**
-     * Scans and connects to a device depending on the device name. In the future
-     * I would like for it to accept regardless of the device name.
-     */
-    async scanAndConnect() {
-        
-    }
-
-    /**
-     * Connects to the previously scanned device
-     */
-    async connect() {
-        
-    }
-    
-    /**
-     * Disconnects the device
-     */
-    async disconnect() {
-
-    }
-
-
-    sendEffect() {
-        
     }
 }

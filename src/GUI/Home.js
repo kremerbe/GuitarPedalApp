@@ -12,10 +12,11 @@ import AppComponent from '../EffectsObjects/AppComponent';
 const BTStatus = {
     OFF: "Bluetooth Off",
     NOT_CONNECTED: "Not connected",
-    CONNECTED: "Connected!"
+    CONNECTING: "Connecting...",
+    CONNECTED: "Connected"
 }
 
-const rPiName = "Yo Mum";
+const rPiName = "MSOE-H4L36Q2";
 
 export default class Home extends Component {
 
@@ -93,6 +94,7 @@ export default class Home extends Component {
 
     componentWillUnmount() {
         this.netManager.deleteListeners();
+        // TODO: disconnect if connected
     }
 
 
@@ -110,6 +112,7 @@ export default class Home extends Component {
 
     onBTOff = () => {
         this.setState({ bTStatus: BTStatus.OFF });
+        this.netManager.deleteDevice();
     }
 
     onBTOn = () => {
@@ -124,14 +127,47 @@ export default class Home extends Component {
     }
 
     connectToPi = async () => {
+        // check paired
         let pairedToPi = await this.netManager.checkPaired(rPiName);
-        if (!pairedToPi) this.sendPairToPiAlert();
+        if (!pairedToPi) this.showPairToPiAlert();
+        else {
+            // attempt to connect
+            connected = await this.netManager.connectToDevice(rPiName);
+            if (connected) this.setState({ bTStatus: BTStatus.CONNECTED });
+            else {
+                this.showFailToConnectAlert();
+                this.setState({ bTStatus: BTStatus.NOT_CONNECTED });
+            }
+        }
     }
 
-    sendPairToPiAlert = () => {
+    disconnectFromPi = async () => {
+        disconnected = await this.netManager.disconnectFromDevice();
+        if (disconnected) this.setState({ bTStatus: BTStatus.NOT_CONNECTED });
+        else this.showFailToDisconnectAlert();
+
+    }
+
+    showPairToPiAlert = () => {
         Alert.alert(
             'Pair to Pedal',
             "Make sure to pair your phone with the guitar pedal named '"+rPiName+"' using your phone's bluetooth interface before connecting.",
+            [{text: "OK"}]
+        );
+    }
+
+    showFailToConnectAlert = () => {
+        Alert.alert(
+            "Failed to Connect!",
+            "Failed to connect to the guitar pedal. Try restarting Bluetooth.",
+            [{text: "OK"}]
+        );
+    }
+
+    showFailToDisconnectAlert = () => {
+        Alert.alert(
+            'Failed to Disconnect',
+            "Failed to disconnect from the guitar pedal. Try restarting Bluetooth.",
             [{text: "OK"}]
         );
     }
@@ -150,6 +186,7 @@ export default class Home extends Component {
     }
 
     renderHeader = () => {
+        let btButtonText = this.state.bTStatus === BTStatus.CONNECTED? "Disconnect": "Connect";
         return (
             <View style={styles.header}>
                 <View style={styles.spacer}/>
@@ -158,11 +195,10 @@ export default class Home extends Component {
                     <TouchableOpacity 
                         style={styles.bTButton}
                         onPress={() => {
-                            console.log("Trying to connect...");
                             this.netManager.testBT();
                         }}
                     >
-                        <Text style={styles.buttonText}>Connect</Text>
+                        <Text style={styles.buttonText}>{btButtonText}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -178,7 +214,7 @@ export default class Home extends Component {
     }
 
     renderPedalDisplay = () => {
-        let btButtonDisabled = this.state.bTStatus === BTStatus.OFF;
+        let btButtonDisabled = this.state.bTStatus === BTStatus.OFF || this.state.bTStatus === BTStatus.CONNECTING;
 
         return (
             <View style={styles.pedalDisplay}>
@@ -189,7 +225,7 @@ export default class Home extends Component {
                             disabled={btButtonDisabled}
                             style={[styles.bTButton,{opacity: btButtonDisabled? 0.5: 1}]}
                             onPress={() => {
-                                console.log("Trying to connect...");
+                                this.setState({ bTStatus: BTStatus.CONNECTING })
                                 this.connectToPi();
                             }}
                         >
