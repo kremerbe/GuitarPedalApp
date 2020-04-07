@@ -29,6 +29,8 @@ export default class EffectList extends Component {
                     <Text style={styles.text}>Saved Effects:</Text>
                 </View>
                 <FlatList
+                    style={styles.list}
+                    contentContainerStyle={{ flexGrow: 1 }}
                     data={this.state.effects}
                     renderItem={({item}) => (
                         <View style={styles.row}>
@@ -43,9 +45,23 @@ export default class EffectList extends Component {
                         </View>
                     )}
                     keyExtractor={item => item.getName()}
+                    ItemSeparatorComponent={this.divider}
+                    ListFooterComponent={this.addEffectButton}
                 />
             </View>
         );
+    }
+
+    addEffectButton = () => {
+        return (
+            <TouchableOpacity style={styles.newEffectButton}>
+                <Text style={styles.newEffectText}>Add Effect</Text>
+            </TouchableOpacity>
+        )
+    }
+
+    divider = () => {
+        return (<View style={styles.divider}/>);
     }
 }
 
@@ -58,6 +74,10 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#a7d897',
         margin: 5,
+        flexGrow: 1,
+    },
+    list: {
+        flex: 1,
     },
     header: {
         alignItems: 'center',
@@ -66,6 +86,14 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         margin: 10,
+    },
+    divider: {
+        height: 1,
+        backgroundColor: '#000000',
+        flex: 1,
+        flexDirection: 'row',
+        marginLeft: 10,
+        marginRight: 10,
     },
     spacer: {
         flex: 1,
@@ -85,6 +113,18 @@ const styles = StyleSheet.create({
         backgroundColor: '#e0e0e0',
         padding: 5,
         borderRadius: 10,
+    },
+    newEffectButton: {
+        backgroundColor: '#013220',
+        padding: 10,
+        borderRadius: 10,
+        margin: 10,
+        alignItems: 'center',
+    },
+    newEffectText: {
+        fontFamily: 'sans-serif',
+        fontSize: 20,
+        color: '#ffffff',
     },
     buttonText: {
         fontFamily: 'sans-serif',

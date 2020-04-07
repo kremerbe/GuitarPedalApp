@@ -82,6 +82,7 @@ export default class NetworkManager2 {
                 newDevice = await RNBluetoothClassic.connect(deviceId);
                 connected = await RNBluetoothClassic.isConnected();
                 if (connected) {
+                    console.log("Connected successfully to device: ", newDevice);
                     this.device = newDevice;
                     return true;
                 }
