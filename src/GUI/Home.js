@@ -53,7 +53,6 @@ export default class Home extends Component {
             //     console.log("Effect: " + newEffects[i].name);
             // }
         });
-
     }
 
     createTestEffects = () => {
@@ -129,12 +128,15 @@ export default class Home extends Component {
     connectToPi = async () => {
         // check paired
         let pairedToPi = await this.netManager.checkPaired(rPiName);
-        if (!pairedToPi) this.showPairToPiAlert();
-        else {
+        if (!pairedToPi) {
+            this.showPairToPiAlert();
+        } else {
+            this.setState({ bTStatus: BTStatus.CONNECTING });
             // attempt to connect
             connected = await this.netManager.connectToDevice(rPiName);
-            if (connected) this.setState({ bTStatus: BTStatus.CONNECTED });
-            else {
+            if (connected) {
+                this.setState({ bTStatus: BTStatus.CONNECTED });
+            } else {
                 this.showFailToConnectAlert();
                 this.setState({ bTStatus: BTStatus.NOT_CONNECTED });
             }
@@ -143,8 +145,11 @@ export default class Home extends Component {
 
     disconnectFromPi = async () => {
         disconnected = await this.netManager.disconnectFromDevice();
-        if (disconnected) this.setState({ bTStatus: BTStatus.NOT_CONNECTED });
-        else this.showFailToDisconnectAlert();
+        if (disconnected) {
+            this.setState({ bTStatus: BTStatus.NOT_CONNECTED });
+        } else {
+            this.showFailToDisconnectAlert();
+        }
 
     }
 
@@ -215,6 +220,7 @@ export default class Home extends Component {
 
     renderPedalDisplay = () => {
         let btButtonDisabled = this.state.bTStatus === BTStatus.OFF || this.state.bTStatus === BTStatus.CONNECTING;
+        let btButtonText = this.state.bTStatus === BTStatus.CONNECTED? "Disconnect": "Connect";
 
         return (
             <View style={styles.pedalDisplay}>
@@ -225,11 +231,14 @@ export default class Home extends Component {
                             disabled={btButtonDisabled}
                             style={[styles.bTButton,{opacity: btButtonDisabled? 0.5: 1}]}
                             onPress={() => {
-                                this.setState({ bTStatus: BTStatus.CONNECTING })
-                                this.connectToPi();
+                                if (this.state.bTStatus === BTStatus.CONNECTED) {
+                                    this.disconnectFromPi();
+                                } else {
+                                    this.connectToPi();
+                                }
                             }}
                         >
-                            <Text style={styles.buttonText}>Connect</Text>
+                            <Text style={styles.buttonText}>{btButtonText}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

@@ -102,11 +102,11 @@ export default class NetworkManager2 {
         let pairedDevices = await RNBluetoothClassic.list();
         foundDevices = pairedDevices.filter(device => device.name === deviceName);
         if (foundDevices.length < 1) return null;
-        else if (foundDevices.length == 1) return pairedDevices[0].id;
+        else if (foundDevices.length == 1) return foundDevices[0].id;
         else {  // multiple devices with that name found (unlikely)
             // TODO: handle this situation better
             console.log("Warning: multiple devices found (returning the first...): ",foundDevices);
-            return pairedDevices[0].id;
+            return foundDevices[0].id;
         }
     }
 
