@@ -10,10 +10,12 @@ import React from 'react';
 import { YellowBox } from 'react-native';
 import { createBottomTabNavigator, createAppContainer, createSwitchNavigator, createStackNavigator, createMaterialTopTabNavigator } from 'react-navigation';
 import Home from './src/GUI/Home';
+import EffectCreator from './src/GUI/EffectCreator';
 
-const AppStack = createSwitchNavigator(
+const AppStack = createSwitchNavigator (
   {
-    home: Home
+    home: Home,
+    effectCreator: EffectCreator
   },
   {
     initialRouteName: "home"

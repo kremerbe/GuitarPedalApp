@@ -21,6 +21,15 @@ export default class EffectList extends Component {
         this.setState({ effects: nextProps.effects });
     }
 
+    /**
+     * Activates send effect method from parent given in props, if present.
+     */
+    handleSendPress = () => {
+        if (this.props.onSendPress) {
+            this.props.onSendPress();
+        }
+    }
+
 
     render() {
         return (
@@ -39,7 +48,8 @@ export default class EffectList extends Component {
                             <TouchableOpacity style={styles.editButton}>
                                 <Text style={styles.buttonText}>{'Edit'}</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={this.handleSendPress}>
                                 <Text style={styles.buttonText}>{'>'}</Text>
                             </TouchableOpacity>
                         </View>

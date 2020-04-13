@@ -61,7 +61,7 @@ export default class NetworkManager2 {
      */
     async checkPaired(deviceName) {
         let pairedDevices = await RNBluetoothClassic.list();
-        // console.log("Paired Devices: ",pairedDevices);
+        console.log("Paired Devices: ",pairedDevices);
         // checks if a device with the name piName exists in the list
         return pairedDevices.some(device => device.name === deviceName);
     }
@@ -111,8 +111,13 @@ export default class NetworkManager2 {
         }
     }
 
-    sendEffect() {
-        
+    /**
+     * Sends the given data to the connected device.
+     * @param {String} data the data to send.
+     */
+    async sendData(data) {
+        console.log("Sending data...");
+        await RNBluetoothClassic.write(data);
     }
 
     /**

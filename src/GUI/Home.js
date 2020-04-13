@@ -16,7 +16,7 @@ const BTStatus = {
     CONNECTED: "Connected"
 }
 
-const rPiName = "MSOE-H4L36Q2";
+const rPiName = "patchbox"; //"MSOE-H4L36Q2";
 
 export default class Home extends Component {
 
@@ -76,7 +76,7 @@ export default class Home extends Component {
             effects: this.createTestEffects(),
         });
 
-        this.bTStartupSequence();
+        this.enableBT();
 
         this.netManager.addBTOnOffListeners(this.onBTOff,this.onBTOn);
 
@@ -115,10 +115,10 @@ export default class Home extends Component {
     }
 
     onBTOn = () => {
-        this.bTStartupSequence();
+        this.enableBT();
     }
 
-    bTStartupSequence = async () => {
+    enableBT = async () => {
         let enabled = await this.netManager.enable();
         if (enabled) {
             this.setState({ bTStatus: BTStatus.NOT_CONNECTED });
@@ -143,6 +143,11 @@ export default class Home extends Component {
         }
     }
 
+    sendEffectData = async () => {
+        testSendData = "Here is some data to send to the Pi ya noob!";
+        this.netManager.sendData(testSendData);
+    }
+
     disconnectFromPi = async () => {
         disconnected = await this.netManager.disconnectFromDevice();
         if (disconnected) {
@@ -150,7 +155,6 @@ export default class Home extends Component {
         } else {
             this.showFailToDisconnectAlert();
         }
-
     }
 
     showPairToPiAlert = () => {
@@ -213,7 +217,10 @@ export default class Home extends Component {
     renderEffectList = () => {
         return (
             <View style={styles.effectList}>
-                <EffectList effects={this.state.effects}/>
+                <EffectList 
+                    effects={this.state.effects}
+                    onSendPress={this.sendEffectData}
+                />
             </View>
         );
     }
