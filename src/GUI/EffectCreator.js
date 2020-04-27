@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
+import DropDownItem from 'react-native-drop-down-item';
 
 export default class EffectCreator extends Component {
 

@@ -144,7 +144,7 @@ export default class Home extends Component {
     }
 
     sendEffectData = async () => {
-        testSendData = "Here is some data to send to the Pi ya noob!";
+        testSendData = "Hey, it works hopefully...";
         this.netManager.sendData(testSendData);
     }
 
