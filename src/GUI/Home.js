@@ -20,8 +20,6 @@ const rPiName = "patchbox"; //"MSOE-H4L36Q2";
 
 export default class Home extends Component {
 
-    netManager;
-
     constructor(props){
         super(props);
 
@@ -87,9 +85,15 @@ export default class Home extends Component {
     }
 
     importEffect = async () => {
-        await this.fsManager.importEffect();
+        success = await this.fsManager.importEffect();
+        console.log("Imported effect: ", success);
         newEffects = await this.loadEffects();
-        console.log("New Effects: ",newEffects);
+        this.setState({ effects: newEffects });
+    }
+
+    deleteEffect = async (effect) => {
+        success = await this.fsManager.deleteEffect(effect);
+        newEffects = await this.loadEffects();
         this.setState({ effects: newEffects });
     }
 
@@ -205,6 +209,7 @@ export default class Home extends Component {
                     effects={this.state.effects}
                     onSendPress={this.sendEffectData}
                     onAddEffectPress={this.importEffect}
+                    onDelPress={this.deleteEffect}
                 />
             </View>
         );

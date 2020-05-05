@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { FlatList, TouchableOpacity, View, Text, StyleSheet } from 'react-native';
+import { FlatList, TouchableOpacity, View, Text, StyleSheet, Image } from 'react-native';
 import { PropTypes } from 'prop-types';
 
 export default class EffectList extends Component {
@@ -36,6 +36,12 @@ export default class EffectList extends Component {
         }
     }
 
+    handleDeletePress = (effect) => {
+        if (this.props.onDelPress) {
+            this.props.onDelPress(effect);
+        }
+    }
+
 
     render() {
         return (
@@ -51,6 +57,16 @@ export default class EffectList extends Component {
                         <View style={styles.row}>
                             <Text style={styles.text}>{item.getName()}</Text>
                             <View style={styles.spacer}/>
+                            <TouchableOpacity
+                                onPress={() => this.handleDeletePress(item)}
+                            >
+                                <View style={styles.trashContainer}>
+                                    <Image
+                                        source={require('../../TrashBinIcon.png')}
+                                        style={styles.trashImg}
+                                    />
+                                </View>
+                            </TouchableOpacity>
                             <TouchableOpacity style={styles.editButton}>
                                 <Text style={styles.buttonText}>{'Edit'}</Text>
                             </TouchableOpacity>
@@ -121,6 +137,16 @@ const styles = StyleSheet.create({
     text: {
         fontFamily: 'sans-serif',
         fontSize: 24,
+    },
+    trashContainer: {
+        // flex: 1,
+    },
+    trashImg: {
+        flex: 1,
+        width: 40,
+        height: 40,
+        resizeMode: 'contain',
+        //...StyleSheet.absoluteFillObject,
     },
     editButton: {
         backgroundColor: '#e0e0e0',
