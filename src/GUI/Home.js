@@ -33,26 +33,23 @@ export default class Home extends Component {
             bTStatus: BTStatus.OFF,
             effects: [],
         }
-        
-        newEffects = new Array();
-        sEffects = this.fsManager.loadEffects().then((obj) => {
-            // console.log("Shit's Loaded!");
-            // console.log(obj);
-            obj.forEach(x => {
-                // console.log(x.name);
-                // console.log(x.components);          
-                newEffects.push(this.pdManager.pdToApp(x));
-            });
-            this.setState({
-                effects: newEffects,
-            });
+    }
 
-            /** Not working newEffects and effects undefined.... */
-            // for(i = 0; i < newEffects.length; i++)
-            // {
-            //     console.log("Effect: " + newEffects[i].name);
-            // }
+    componentDidMount = async () => {
+
+		// Load the effects from the filesystem
+        this.setState({
+            effects: await this.loadEffects(),
         });
+
+        // Bluetooth start-up sequence
+        this.enableBT();
+        this.netManager.addBTOnOffListeners(this.onBTOff,this.onBTOn);
+    }
+
+    componentWillUnmount() {
+        this.netManager.deleteListeners();
+        // TODO: disconnect if connected
     }
 
     createTestEffects = () => {
@@ -66,48 +63,35 @@ export default class Home extends Component {
         return [new Effect("passthrough", compList), new Effect("pass2", compList)];
     }
 
-    componentDidMount = async () => {
-        // This effects is a list of tuples not a list of Effects yet
-        // effects = await this.fsManager.loadEffects();
-        // console.log("Loaded Effects!");
-        // console.log(effects);
-		
-        this.setState({
-            effects: this.createTestEffects(),
+    /**
+     * Loads the effects saved in the filesystem into the app and returns them.
+     * @returns the list of effects as Effect objects that have been loaded.
+     */
+    loadEffects = async () => {
+        newEffects = new Array();
+        sEffects = await this.fsManager.loadEffects().then((obj) => {
+            // console.log(obj);
+            obj.forEach(x => {
+                // console.log(x.name);
+                // console.log(x.components);          
+                newEffects.push(this.pdManager.pdToApp(x));
+            });
+
+            /** Not working newEffects and effects undefined.... */
+            // for(i = 0; i < newEffects.length; i++)
+            // {
+            //     console.log("Effect: " + newEffects[i].name);
+            // }
         });
-
-        this.enableBT();
-
-        this.netManager.addBTOnOffListeners(this.onBTOff,this.onBTOn);
-
-        // await this.fsManager.testStuff();
-        
-        /**
-         * This should be used to find the effect the user wants to 
-         * display on the gui and then convert it
-         */
-        // effects.forEach(effect => {
-        //     this.pdManager.pdToApp(effect);
-        // });
+        return newEffects;
     }
 
-    componentWillUnmount() {
-        this.netManager.deleteListeners();
-        // TODO: disconnect if connected
+    importEffect = async () => {
+        await this.fsManager.importEffect();
+        newEffects = await this.loadEffects();
+        console.log("New Effects: ",newEffects);
+        this.setState({ effects: newEffects });
     }
-
-
-
-    // askPermissions = async () => {
-    //     try {
-    //         const granted = PermissionsAndroid.request(
-    //             PermissionsAndroid.PERMISSIONS.BLUETOOTH,
-    //             {
-
-    //             }
-    //         )
-    //     }
-    // }
 
     onBTOff = () => {
         this.setState({ bTStatus: BTStatus.OFF });
@@ -220,6 +204,7 @@ export default class Home extends Component {
                 <EffectList 
                     effects={this.state.effects}
                     onSendPress={this.sendEffectData}
+                    onAddEffectPress={this.importEffect}
                 />
             </View>
         );

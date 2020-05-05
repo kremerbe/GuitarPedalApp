@@ -30,6 +30,12 @@ export default class EffectList extends Component {
         }
     }
 
+    handleAddEffectPress = () => {
+        if (this.props.onAddEffectPress) {
+            this.props.onAddEffectPress();
+        }
+    }
+
 
     render() {
         return (
@@ -64,7 +70,10 @@ export default class EffectList extends Component {
 
     addEffectButton = () => {
         return (
-            <TouchableOpacity style={styles.newEffectButton}>
+            <TouchableOpacity 
+                style={styles.newEffectButton}
+                onPress={this.handleAddEffectPress}
+            >
                 <Text style={styles.newEffectText}>Add Effect</Text>
             </TouchableOpacity>
         )

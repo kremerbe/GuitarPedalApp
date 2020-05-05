@@ -1,5 +1,6 @@
 import Effect from './../EffectsObjects/Effect';
 import AppComponent from '../EffectsObjects/AppComponent';
+import DocumentPicker from 'react-native-document-picker';
 var RNFS = require('react-native-fs');
 
 
@@ -64,7 +65,8 @@ export default class FileSystemManager {
 
     /**
      * Loads the effect files from the file system.
-     * @returns {Array{Effect}} an array of Effect objects created from the saved PD files.
+     * @returns {Array{Effect}} an array of tuples containing the information of the saved PD files.
+     * Each tuple has the following format: {'name': {String}, 'components': {String}}
      */
     async loadEffects() {
         effectFiles = await this.readDirPdFilenames(this.SAVE_PATH);
@@ -99,6 +101,66 @@ export default class FileSystemManager {
         })
         .catch(err => {
             console.log("ERROR: Could not delete the file ''"+effect.getName()+"': "+err.message);
+            return false;
+        })
+    }
+
+    /**
+     * Opens a file chooser and moves the chosen .pd file to the SAVE_PATH
+     */
+    async importEffect() {
+        console.log("Attempting to import effect..");
+        let file = await this.fileChooser();
+        console.log("Filename: ",file.name);
+
+        if (file === null) {
+            return false;
+        } else if (file !== undefined && file.name.includes('.pd')) {
+            let destPath = this.SAVE_PATH+file.name;
+            console.log("Destination path: ",destPath);
+            let moved = await this.moveFile(file.uri, destPath);
+            console.log("Moved: ",moved);
+            return moved;
+        }
+        return true;
+    }
+
+    /**
+     * Opens a file chooser for choosing a .pd file.
+     */
+    async fileChooser() {
+        return await DocumentPicker.pick({
+            type: [DocumentPicker.types.allFiles],
+        })
+        .then(file => {
+            console.log("File found! ",file.uri, file.type, file.name, file.size);
+            return file;
+        })
+        .catch(err => {
+            if (DocumentPicker.isCancel(err)) {
+                // User exited dialog - do nothing
+                return undefined;
+            } else {
+                console.log("ERROR trying to use file chooser: ",err);
+                return null;
+            }
+        });
+    }
+
+    /**
+     * Moves a file from one location to another.
+     * @param {String} filepath uri path of the file to move.
+     * @param {String} destPath uri path of the destination of the file.
+     */
+    async moveFile(filepath, destPath) {
+        console.log("Attempting to move file from ", filepath," to ",destPath);
+        await RNFS.moveFile(filepath, destPath)
+        .then(success => {
+            console.log("Successfully moved file!");
+            return true;
+        })
+        .catch(err => {
+            console.log("Error: failed to move file!", err);
             return false;
         })
     }
