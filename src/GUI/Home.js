@@ -131,9 +131,9 @@ export default class Home extends Component {
         }
     }
 
-    sendEffectData = async () => {
-        testSendData = "Hey, it works hopefully...";
-        this.netManager.sendData(testSendData);
+    sendEffectData = async (effect) => {
+        sendData = effect.AppToPD();
+        this.netManager.sendData(sendData);
     }
 
     disconnectFromPi = async () => {
