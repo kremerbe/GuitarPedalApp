@@ -78,8 +78,9 @@ export default class EffectList extends Component {
                     )}
                     keyExtractor={item => item.getName()}
                     ItemSeparatorComponent={this.divider}
-                    ListFooterComponent={this.addEffectButton}
+                    // ListFooterComponent={this.addEffectButton}
                 />
+                {this.addEffectButton()}
             </View>
         );
     }
