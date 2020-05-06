@@ -106,61 +106,60 @@ export default class FileSystemManager {
     }
 
     /**
-     * Opens a file chooser and moves the chosen .pd file to the SAVE_PATH
+     * Opens a file chooser and moves the chosen .pd file to the SAVE_PATH.
+     * @returns Whether or not a file was imported. Throws error if file was not the right type.
      */
     async importEffect() {
-        console.log("Attempting to import effect..");
         let file = await this.fileChooser();
-        console.log("Filename: ",file.name);
 
         if (file === null) {
             return false;
-        } else if (file !== undefined && file.name.includes('.pd')) {
+        } else if (!file.name.includes('.pd')) {
+            throw "Non PD file chosen";
+        } else {
             let destPath = this.SAVE_PATH+file.name;
-            console.log("Destination path: ",destPath);
-            let moved = await this.moveFile(file.uri, destPath);
-            console.log("Moved: ",moved);
-            return moved;
+            let success = await this.moveFile(file.uri, destPath);
+            return success;
         }
-        return true;
     }
 
     /**
      * Opens a file chooser for choosing a .pd file.
+     * @returns The file chosen by the user. Null if nothing chosen or error encountered.
      */
     async fileChooser() {
         return await DocumentPicker.pick({
             type: [DocumentPicker.types.allFiles],
         })
         .then(file => {
-            console.log("File found! ",file.uri, file.type, file.name, file.size);
+            // console.log("File found! ",file.uri, file.type, file.name, file.size);
             return file;
         })
         .catch(err => {
             if (DocumentPicker.isCancel(err)) {
                 // User exited dialog - do nothing
-                return undefined;
             } else {
-                console.log("ERROR trying to use file chooser: ",err);
-                return null;
+                console.log("ERROR: while trying to choose file.");
             }
+            return null;
         });
     }
 
     /**
      * Moves a file from one location to another.
+     * @returns Whether or not the file was moved successfully.
      * @param {String} filepath uri path of the file to move.
      * @param {String} destPath uri path of the destination of the file.
      */
     async moveFile(filepath, destPath) {
         console.log("Attempting to move file from ", filepath," to ",destPath);
-        await RNFS.moveFile(filepath, destPath)
+        return await RNFS.moveFile(filepath, destPath)
         .then(success => {
             console.log("Successfully moved file!");
             return true;
         })
         .catch(err => {
-            console.log("Error: failed to move file!", err);
+            console.log("ERROR: failed to move file!", err);
             return false;
         })
     }
