@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { FlatList, TouchableOpacity, View, Text, StyleSheet, Image } from 'react-native';
+import { FlatList, TouchableOpacity, View, Text, StyleSheet, Image, Alert } from 'react-native';
 import { PropTypes } from 'prop-types';
 
 export default class EffectList extends Component {
@@ -32,7 +32,10 @@ export default class EffectList extends Component {
 
     handleAddEffectPress = () => {
         if (this.props.onAddEffectPress) {
-            this.props.onAddEffectPress();
+            this.props.onAddEffectPress()
+            .catch(err => {
+                this.showIncorrectFiletypeAlert();
+            });
         }
     }
 
@@ -40,6 +43,14 @@ export default class EffectList extends Component {
         if (this.props.onDelPress) {
             this.props.onDelPress(effect);
         }
+    }
+
+    showIncorrectFiletypeAlert = () => {
+        Alert.alert(
+            'Non-PureData File',
+            "Make sure to select a PureData (.pd) file only.",
+            [{text: "OK"}]
+        );
     }
 
 

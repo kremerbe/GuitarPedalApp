@@ -86,9 +86,10 @@ export default class Home extends Component {
 
     importEffect = async () => {
         success = await this.fsManager.importEffect();
-        console.log("Imported effect: ", success);
-        newEffects = await this.loadEffects();
-        this.setState({ effects: newEffects });
+        if (success) {
+            newEffects = await this.loadEffects();
+            this.setState({ effects: newEffects });
+        }
     }
 
     deleteEffect = async (effect) => {
@@ -143,6 +144,21 @@ export default class Home extends Component {
         } else {
             this.showFailToDisconnectAlert();
         }
+    }
+
+    showDeleteConfirmAlert = (effect) => {
+        return Alert.alert(
+            "Delete Confirmation",
+            "Are you sure you want to delete the effect "+effect.getName()+"?",
+            [
+                {
+                  text: "Cancel",
+                  style: "cancel"
+                },
+                { text: "OK", onPress: () => this.deleteEffect(effect)}
+            ],
+            { cancelable: false }
+        );
     }
 
     showPairToPiAlert = () => {
@@ -209,7 +225,7 @@ export default class Home extends Component {
                     effects={this.state.effects}
                     onSendPress={this.sendEffectData}
                     onAddEffectPress={this.importEffect}
-                    onDelPress={this.deleteEffect}
+                    onDelPress={this.showDeleteConfirmAlert}
                 />
             </View>
         );
