@@ -240,6 +240,7 @@ export default class Home extends Component {
                     onSendPress={this.sendEffectData}
                     onAddEffectPress={this.importEffect}
                     onDelPress={this.showDeleteConfirmAlert}
+                    sendEnabled={this.state.bTStatus===BTStatus.CONNECTED}
                 />
             </View>
         );

@@ -10,6 +10,7 @@ export default class EffectList extends Component {
 
         this.state = {
             effects: this.props.effects,
+            sendEnabled: this.props.sendEnabled,
         }
     }
 
@@ -18,7 +19,10 @@ export default class EffectList extends Component {
      * @param {Props} nextProps the new props
      */
     componentWillReceiveProps(nextProps) {
-        this.setState({ effects: nextProps.effects });
+        this.setState({ 
+            effects: nextProps.effects,
+            sendEnabled: nextProps.sendEnabled,
+        });
     }
 
     /**
@@ -78,12 +82,19 @@ export default class EffectList extends Component {
                                     />
                                 </View>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.editButton}>
+                            {/* <TouchableOpacity style={styles.editButton}>
                                 <Text style={styles.buttonText}>{'Edit'}</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                             <TouchableOpacity
+                                disabled={!this.state.sendEnabled}
+                                style={{opacity: !this.state.sendEnabled? 0.3: 1}}
                                 onPress={() => this.handleSendPress(item)}>
-                                <Text style={styles.buttonText}>{'>'}</Text>
+                                <View style={styles.trashContainer}>
+                                    <Image
+                                        source={require('../../sendIcon.png')}
+                                        style={styles.trashImg}
+                                    />
+                                </View>
                             </TouchableOpacity>
                         </View>
                     )}
