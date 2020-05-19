@@ -13,7 +13,7 @@ export default class NetworkManager2 {
      * @param {Function} bTOffFunc what to do when bluetooth is turned off.
      * @param {Function} bTOnFunc what to do when bluetooth is turned on.
      */
-    addBTOnOffListeners(bTOffFunc, bTOnFunc) {
+    addBTListeners(bTOffFunc, bTOnFunc, bTDisconnectedFunc) {
         this.events.push(
             RNBluetoothClassic.addListener(
                 BTEvents.BLUETOOTH_DISABLED,
@@ -25,6 +25,20 @@ export default class NetworkManager2 {
             RNBluetoothClassic.addListener(
                 BTEvents.BLUETOOTH_ENABLED,
                 bTOnFunc,
+                this
+            )
+        );
+        this.events.push(
+            RNBluetoothClassic.addListener(
+                BTEvents.BLUETOOTH_DISCONNECTED,
+                bTDisconnectedFunc,
+                this
+            )
+        );
+        this.events.push(
+            RNBluetoothClassic.addListener(
+                BTEvents.CONNECTION_LOST,
+                bTDisconnectedFunc,
                 this
             )
         );
@@ -117,7 +131,7 @@ export default class NetworkManager2 {
      */
     async sendData(data) {
         console.log("Sending data...");
-        await RNBluetoothClassic.write(data);
+        await RNBluetoothClassic.write(data+"\nEndFile");
     }
 
     /**

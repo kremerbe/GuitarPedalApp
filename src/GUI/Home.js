@@ -42,7 +42,7 @@ export default class Home extends Component {
 
         // Bluetooth start-up sequence
         this.enableBT();
-        this.netManager.addBTOnOffListeners(this.onBTOff,this.onBTOn);
+        this.netManager.addBTListeners(this.onBTOff, this.onBTOn, this.onBTDisconnected);
     }
 
     componentWillUnmount() {
@@ -105,6 +105,12 @@ export default class Home extends Component {
 
     onBTOn = () => {
         this.enableBT();
+    }
+
+    onBTDisconnected = () => {
+        console.log("BT Disconnected");
+        this.showDisconnectedAlert();
+        this.setState({ bTStatus: BTStatus.NOT_CONNECTED });
     }
 
     enableBT = async () => {
@@ -181,6 +187,14 @@ export default class Home extends Component {
         Alert.alert(
             'Failed to Disconnect',
             "Failed to disconnect from the guitar pedal. Try restarting Bluetooth.",
+            [{text: "OK"}]
+        );
+    }
+
+    showDisconnectedAlert = () => {
+        Alert.alert(
+            'Disconnected from Pedal',
+            "You have lost connected to the pedal.",
             [{text: "OK"}]
         );
     }
