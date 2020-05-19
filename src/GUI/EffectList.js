@@ -2,10 +2,11 @@
 import React, { Component } from 'react';
 import { FlatList, TouchableOpacity, View, Text, StyleSheet, Image, Alert } from 'react-native';
 import { PropTypes } from 'prop-types';
+import { colors } from './ColorScheme';
 
 export default class EffectList extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -62,7 +63,7 @@ export default class EffectList extends Component {
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <Text style={styles.text}>Saved Effects:</Text>
+                    <Text style={styles.headerText}>Saved Effects:</Text>
                 </View>
                 <FlatList
                     style={styles.list}
@@ -78,7 +79,7 @@ export default class EffectList extends Component {
                                 <View style={styles.trashContainer}>
                                     <Image
                                         source={require('../../TrashBinIcon.png')}
-                                        style={styles.trashImg}
+                                        style={styles.images}
                                     />
                                 </View>
                             </TouchableOpacity>
@@ -87,12 +88,12 @@ export default class EffectList extends Component {
                             </TouchableOpacity> */}
                             <TouchableOpacity
                                 disabled={!this.state.sendEnabled}
-                                style={{opacity: !this.state.sendEnabled? 0.3: 1}}
+                                style={{opacity: !this.state.sendEnabled? 0.2: 1}}
                                 onPress={() => this.handleSendPress(item)}>
                                 <View style={styles.trashContainer}>
                                     <Image
                                         source={require('../../sendIcon.png')}
-                                        style={styles.trashImg}
+                                        style={styles.images}
                                     />
                                 </View>
                             </TouchableOpacity>
@@ -130,15 +131,23 @@ EffectList.propTypes = {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#a7d897',
-        margin: 5,
+        backgroundColor: colors.background,
         flexGrow: 1,
     },
     list: {
         flex: 1,
     },
     header: {
-        alignItems: 'center',
+        // alignItems: 'center',
+        // backgroundColor: '#296e01',
+        // backgroundColor: '#005b11',
+        backgroundColor: colors.savedEffects,
+        padding: 10,
+    },
+    headerText: {
+        color: colors.text,
+        fontFamily: 'sans-serif',
+        fontSize: 24,
     },
     row: {
         flex: 1,
@@ -147,7 +156,7 @@ const styles = StyleSheet.create({
     },
     divider: {
         height: 1,
-        backgroundColor: '#000000',
+        backgroundColor: colors.black,
         flex: 1,
         flexDirection: 'row',
         marginLeft: 10,
@@ -164,7 +173,7 @@ const styles = StyleSheet.create({
     trashContainer: {
         // flex: 1,
     },
-    trashImg: {
+    images: {
         flex: 1,
         width: 40,
         height: 40,
@@ -177,13 +186,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginRight: 10,
     },
-    sendButton: {
-        backgroundColor: '#e0e0e0',
-        padding: 5,
-        borderRadius: 10,
-    },
     newEffectButton: {
-        backgroundColor: '#013220',
+        backgroundColor: colors.addEffectsButton,
         padding: 10,
         borderRadius: 10,
         margin: 10,
@@ -192,7 +196,7 @@ const styles = StyleSheet.create({
     newEffectText: {
         fontFamily: 'sans-serif',
         fontSize: 20,
-        color: '#ffffff',
+        color: colors.text,
     },
     buttonText: {
         fontFamily: 'sans-serif',

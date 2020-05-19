@@ -6,6 +6,7 @@ import PureDataManager from './../Logic/PureDataManager';
 import EffectList from './EffectList';
 import Effect from './../EffectsObjects/Effect';
 import AppComponent from '../EffectsObjects/AppComponent';
+import { colors } from './ColorScheme';
 
 
 // enums for bluetooth status
@@ -178,7 +179,7 @@ export default class Home extends Component {
     showFailToConnectAlert = () => {
         Alert.alert(
             "Failed to Connect!",
-            "Failed to connect to the guitar pedal. Try restarting Bluetooth.",
+            "Failed to connect to the guitar pedal. Make sure you've pressed the Bluetooth button on the pedal.",
             [{text: "OK"}]
         );
     }
@@ -186,7 +187,7 @@ export default class Home extends Component {
     showFailToDisconnectAlert = () => {
         Alert.alert(
             'Failed to Disconnect',
-            "Failed to disconnect from the guitar pedal. Try restarting Bluetooth.",
+            "Failed to disconnect from the guitar pedal. Try manually turning Bluetooth off.",
             [{text: "OK"}]
         );
     }
@@ -203,33 +204,54 @@ export default class Home extends Component {
     render() {
         return (
             <View style={styles.container}>
-                {/* {this.renderHeader()} */}
-                <View style={styles.horizontalCont}>
-                    {this.renderEffectList()}
-                    {this.renderPedalDisplay()}
-                </View>
+                {this.renderHeader()}
+                {this.renderPedalImage()}
+                {this.renderEffectList()}
             </View>
         );
     }
 
     renderHeader = () => {
+        let btButtonDisabled = this.state.bTStatus === BTStatus.OFF || this.state.bTStatus === BTStatus.CONNECTING;
         let btButtonText = this.state.bTStatus === BTStatus.CONNECTED? "Disconnect": "Connect";
+        let btButtonColor = this.state.bTStatus === BTStatus.CONNECTED? '#ff0000': '#2975e5';
+
         return (
             <View style={styles.header}>
-                <View style={styles.spacer}/>
-                <Text style={styles.text}>Guitar Pedal App</Text>
-                <View style={[styles.spacer, {justifyContent: 'flex-end'}]}>
-                    <TouchableOpacity 
-                        style={styles.bTButton}
-                        onPress={() => {
-                            this.netManager.testBT();
-                        }}
-                    >
-                        <Text style={styles.buttonText}>{btButtonText}</Text>
-                    </TouchableOpacity>
+                <View style={styles.titleContainer}>
+                    <Text style={styles.titleText}>Guitar Pedal App</Text>
+                </View>
+                <View style={styles.statusBar}>
+                    <Text style={styles.statusText}>{"Status: "+this.state.bTStatus}</Text>
+                    <View style={[styles.spacer, {justifyContent: 'flex-end'}]}>
+                        <TouchableOpacity 
+                            disabled={btButtonDisabled}
+                            style={[styles.bTButton, {backgroundColor: btButtonColor}, {opacity: btButtonDisabled? 0.5: 1}]}
+                            onPress={() => {
+                                if (this.state.bTStatus === BTStatus.CONNECTED) {
+                                    this.disconnectFromPi();
+                                } else {
+                                    this.connectToPi();
+                                }
+                            }}
+                        >
+                            <Text style={styles.statusText}>{btButtonText}</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
         );
+    }
+
+    renderPedalImage = () => {
+        return (
+            <View style={styles.pedalContainer}>
+                <Image 
+                    source={require('../../PedalImage2.png')}
+                    style={styles.pedalImg}
+                />
+            </View>
+        )
     }
 
     renderEffectList = () => {
@@ -245,81 +267,71 @@ export default class Home extends Component {
             </View>
         );
     }
-
-    renderPedalDisplay = () => {
-        let btButtonDisabled = this.state.bTStatus === BTStatus.OFF || this.state.bTStatus === BTStatus.CONNECTING;
-        let btButtonText = this.state.bTStatus === BTStatus.CONNECTED? "Disconnect": "Connect";
-
-        return (
-            <View style={styles.pedalDisplay}>
-                <View style={styles.header}>
-                    <Text style={styles.text}>{"Status: "+this.state.bTStatus}</Text>
-                    <View style={[styles.spacer, {justifyContent: 'flex-end'}]}>
-                        <TouchableOpacity 
-                            disabled={btButtonDisabled}
-                            style={[styles.bTButton,{opacity: btButtonDisabled? 0.5: 1}]}
-                            onPress={() => {
-                                if (this.state.bTStatus === BTStatus.CONNECTED) {
-                                    this.disconnectFromPi();
-                                } else {
-                                    this.connectToPi();
-                                }
-                            }}
-                        >
-                            <Text style={styles.buttonText}>{btButtonText}</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <Image 
-                    source={require('../../PedalImage.png')}
-                    style={styles.pedalImg}
-                />
-            </View>
-        );
-    }
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center'
+        // alignItems: 'center'
         // justifyContent: 'center',
     },
     header: {
+        // flex: 1,
+        backgroundColor: colors.status,
+        // alignItems: 'center',
+        // flexDirection: 'row',
+    },
+    titleContainer: {
+        // flex: 1,
         flexDirection: 'row',
-        backgroundColor: '#000000',
+        justifyContent: 'center',
+        backgroundColor: colors.title,
+        padding: 10,
+    },
+    titleText: {
+        fontFamily: 'sans-serif',
+        color: colors.text,
+        fontSize: 28,
+    },
+    statusBar: {
+        flexDirection: 'row',
+        justifyContent: 'center',
         alignItems: 'center',
-        padding: 5,
+        padding: 2,
+        paddingLeft: 3,
+        paddingRight: 3,
+    },
+    statusText: {
+        fontFamily: 'sans-serif',
+        color: colors.text,
+        fontSize: 20,
     },
     horizontalCont: {
         flex: 1,
         flexDirection: 'row',
-        backgroundColor: '#000000',
+        backgroundColor: colors.background,
     },
     bTButton: {
-        backgroundColor: '#0000ff',
-        padding: 7,
+        padding: 5,
         borderRadius: 10,
     },
     buttonText: {
         fontFamily: 'sans-serif',
-        color: '#ffffff',
+        color: colors.text,
         fontSize: 18,
     },
     text: {
         fontFamily: 'sans-serif',
-        color: '#ffffff',
+        color: colors.text,
         fontSize: 20,
     },
     effectList: {
-        flex: 2,
+        flex: 3,
         flexDirection: 'row'
     },
-    pedalDisplay: {
-        flex: 3,
-        backgroundColor: '#9a7d89',
-        margin: 5,
-        flexDirection: 'column',
+    pedalContainer: {
+        flex: 2,
+        backgroundColor: colors.background,
     },
     pedalImg: {
         flex: 1,
