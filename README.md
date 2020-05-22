@@ -1,4 +1,5 @@
 # Guitar Pedal App
+
 #### This project is a mobile application written in React Native as a companion app to go along with a custom-built guitar effects pedal that utilizes PureData. PureData allows for user-created custom effects and this project attempts to allow them to be imported into this React Native application, saved, and then sent to the custom-built pedal. The specifications of this pedal are located on Hackaday.io here: 
 #### https://hackaday.io/project/171186-the-guitar-pedal-project-multi-effect-processor
 #### This project was done by a small team for a senior design project at Milwaukee School of Engineering in the 2019-2020 school year.
