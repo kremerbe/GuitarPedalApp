@@ -78,7 +78,7 @@ export default class EffectList extends Component {
                             >
                                 <View style={styles.trashContainer}>
                                     <Image
-                                        source={require('../../TrashBinIcon.png')}
+                                        source={require('../../images/TrashBinIcon.png')}
                                         style={styles.images}
                                     />
                                 </View>
@@ -92,7 +92,7 @@ export default class EffectList extends Component {
                                 onPress={() => this.handleSendPress(item)}>
                                 <View style={styles.trashContainer}>
                                     <Image
-                                        source={require('../../sendIcon.png')}
+                                        source={require('../../images/sendIcon.png')}
                                         style={styles.images}
                                     />
                                 </View>

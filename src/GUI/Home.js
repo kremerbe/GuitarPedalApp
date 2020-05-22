@@ -214,7 +214,7 @@ export default class Home extends Component {
     renderHeader = () => {
         let btButtonDisabled = this.state.bTStatus === BTStatus.OFF || this.state.bTStatus === BTStatus.CONNECTING;
         let btButtonText = this.state.bTStatus === BTStatus.CONNECTED? "Disconnect": "Connect";
-        let btButtonColor = this.state.bTStatus === BTStatus.CONNECTED? '#ff0000': '#2975e5';
+        let btButtonColor = this.state.bTStatus === BTStatus.CONNECTED? colors.btButtonDisconnect: colors.btButtonConnect;
 
         return (
             <View style={styles.header}>
@@ -247,7 +247,7 @@ export default class Home extends Component {
         return (
             <View style={styles.pedalContainer}>
                 <Image 
-                    source={require('../../PedalImage2.png')}
+                    source={require('../../images/PedalImage.png')}
                     style={styles.pedalImg}
                 />
             </View>
