@@ -29,7 +29,9 @@
 <img src="images/GuitarPedalAppArchitecture_Updated.png">
 There are a few logic-layer manager objects including: PureDataManager, FileSystemManager, and NetworkManager. The FileSystemManager is responsible for importing, deleting, moving, and loading the effects from the phone's storage and other related activities. Next, the PureDataManager is responsible for turning the raw data of the PureData files into Effect objects which the app can more easily use. This manager is also responsible for turning the Effect file back into raw text for sending to the physical pedal. Lastly, the Network Manager is responsible for all of the Bluetooth functionality with regards to connecting to the pedal and detecting Bluetooth state changes such as being turned off or on, etc. All of the loaded Effects objects are stored within Home, but are also sent and updated in an EffectList object which helps divide up the GUI code of the Main Screen so its more cohesive and easier to read. One last thing, the Effect object also has a number of PDComponent objects, but those aren't being used for anything useful right now, but they will be used in future if an edit screen is added later to the project.
 
-## License??
+## License
+#### GNU General Public License v3.0
+#### Full license in the 'LICENSE' file of this page.
 
 ## Credits
 ### App Developers:
